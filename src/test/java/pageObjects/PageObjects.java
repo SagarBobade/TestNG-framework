@@ -1,5 +1,11 @@
 package pageObjects;
 
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.FindAll;
+
+
+
 public class PageObjects {
 
 	//url
@@ -7,18 +13,36 @@ public class PageObjects {
 	public static String urlAdmin = "http://192.168.91.48/administration/admin";
 	
 	//id
-	public static String userIdId = "userid";
-	public static String passwordId = "password";
-	public static String orgCodeId = "organizationcode";
-	public static String questionLevelId = "difficultylevel";
-	public static String marksPerQuestionId = "totalmarks";
-	public static String activeQuestionId = "status";
-	public static String optionsCountId = "labelForOptions";
-	public static String chooseFile = "dataPath";
+	@FindAll({@FindBy(id = "userid"),
+			@FindBy(xpath = "//*[@id=\"userid\"]")})
+	public static WebElement userIdId;
+	
+	@FindAll({@FindBy(id = "password")})
+	public static WebElement passwordId;
+	
+	@FindAll({@FindBy(id = "organizationcode")})
+	public static WebElement orgCodeId;
+	
+	@FindAll({@FindBy(id = "difficultylevel")})
+	public static WebElement questionLevelId;
+	
+	@FindAll({@FindBy(id = "totalmarks")})
+	public static WebElement marksPerQuestionId;
+	
+	@FindAll({@FindBy(id = "status")})
+	public static WebElement activeQuestionId;
+	
+	@FindAll({@FindBy(id = "labelForOptions")})
+	public static WebElement optionsCountId;
+	
+	@FindAll({@FindBy(id = "dataPath")})
+	public static WebElement chooseFile;
 	
 	//xpath
-	public static String loginBtnXpath = "//button[@type='submit']";
-	public static String courseManagementXpath = "//*[@iDd=\"pills-home-tab 0\"]";
+	@FindAll({@FindBy(xpath = "//button[@type='submit']")})
+	public static WebElement loginBtnXpath;
+	
+	public static String courseManagementXpath = "//*[@id=\"pills-home-tab 0\"]";
 	public static String assessmentQueXpath = "/html/body/app-root/app-full-layout/div[1]/main/div/app-admin/div/div[2]/div/div/div/div[1]/div[1]/div/div";
 	public static String addNewQueXpath = "/html/body/app-root/app-full-layout/div[1]/main/div/app-assessment/div[2]/div/div/form/div[1]/button[1]/i";
 	public static String questionTextboxXpath = "//*[@id=\"questionTex\"]";
@@ -40,8 +64,9 @@ public class PageObjects {
 	public static String marksPerQuestionIdValue = "3";
 	public static String optionsCountValue = "2";
 	public static String questionBankImportFilePath = "D:\\my data\\Eclipse - jan18 19 workspace\\ModuleTestA\\src\\test\\resources\\importFiles\\AssessmentQuestionBank.xlsx";
-	public static int counter = 0;
-	public static int retryLimit = 0;
+	public static int counterOfTry = 1;
+	public static int retryLimit = 3;
+	public static String QuestionAddSheetNameForKeyValue = "QuestionAdd";
 	
 	
 }

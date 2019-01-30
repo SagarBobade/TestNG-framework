@@ -6,7 +6,7 @@
       <class name="ReTryTest">
         <methods>
           <include name="openBrowser"/>
-          <include name="f"/>
+          <include name="setLginCred"/>
         </methods>
       </class> <!-- ReTryTest -->
     </classes>
