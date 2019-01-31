@@ -4,15 +4,13 @@ import java.io.IOException;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
@@ -22,44 +20,45 @@ import common.CommonMethods;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import pageObjects.PageObjects;
 
-public class QuestionAdd{
+public class QuestionAdd {
 
 	public static WebDriver driver;
+	public PageObjects pageObjects;
+
 	public static String methodName;
 	public static boolean isFind = true;
 	public static XSSFWorkbook workbook;
 	public static XSSFSheet sheet;
-	
-	public QuestionAdd() {
-		PageObjects page = PageFactory.initElements(driver,PageObjects.class);
+
+	@BeforeClass
+	public void beforeClass() {
+		pageObjects = PageFactory.initElements(driver, PageObjects.class);
 	}
-	
+
 	@BeforeSuite
 	public void openBrowser() throws IOException {
 		WebDriverManager.chromedriver().setup();
+
 		driver = new ChromeDriver();
 		NgWebDriver ngWebDriver = new NgWebDriver((JavascriptExecutor) driver);
 		ngWebDriver.waitForAngularRequestsToFinish();
-		driver.get(PageObjects.loginUrl);
 		driver.manage().window().maximize();
+
+		System.out.println("maximized");
 	}
 
-	@Test(enabled = true,
-			priority=1,
-			description = "login to the application",
-			retryAnalyzer = common.CommonMethods.class)
+	@Test(enabled = true, priority = 1, description = "login to the application", retryAnalyzer = common.CommonMethods.class)
 	public void login() throws Exception {
-		
-		System.out.println("in login");
-		
-		CommonMethods.TestfindElement(PageObjects.userIdId, CommonMethods.getValue("userIdValue"), "type");
-		CommonMethods.TestfindElement(PageObjects.passwordId, CommonMethods.getValue("passwordValue"), "type");
-		CommonMethods.TestfindElement(PageObjects.orgCodeId, CommonMethods.getValue("orgCodeValue"), "type");
-		CommonMethods.TestfindElement(PageObjects.loginBtnXpath, null, "click");
 
-				Thread.sleep(5000);
-				Assert.assertNotEquals(driver.getCurrentUrl(),"http://192.168.91.48/login");
-			}
+		driver.get("http://192.168.91.48/login");
+		CommonMethods.TestfindElement(pageObjects.userIdId, CommonMethods.getValue("userIdValue"), "type");
+		CommonMethods.TestfindElement(pageObjects.passwordId, CommonMethods.getValue("passwordValue"), "type");
+		CommonMethods.TestfindElement(pageObjects.orgCodeId, CommonMethods.getValue("orgCodeValue"), "type");
+		CommonMethods.TestfindElement(pageObjects.loginButton, "", "click");
+
+		Thread.sleep(5000);
+		Assert.assertNotEquals(driver.getCurrentUrl(), "http://192.168.91.48/login");
+	}
 
 	/*
 	 * @Test(enabled = true, priority=2, dependsOnMethods = { "login" }, description
@@ -166,11 +165,9 @@ public class QuestionAdd{
 	 * @AfterTest public void afterEachTest() { PageObjects.counterOfTry = 0;
 	 * PageObjects.retryLimit = 0; }
 	 */
-	@AfterSuite(enabled = true,
-			alwaysRun = true)
+	@AfterSuite(enabled = true, alwaysRun = true)
 	public void closeBrowser() {
 		driver.close();
 	}
 
-	}
-
+}

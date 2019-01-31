@@ -1,13 +1,21 @@
 package pageObjects;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindAll;
+import org.openqa.selenium.support.FindBy;
 
 
 
 public class PageObjects {
 
+	WebDriver driver = null;
+	
+	public PageObjects(WebDriver driver)
+	{
+		this.driver = driver;
+	}
+	
 	//url
 	public static String loginUrl = "http://192.168.91.48/login";
 	public static String urlAdmin = "http://192.168.91.48/administration/admin";
@@ -15,33 +23,33 @@ public class PageObjects {
 	//id
 	@FindAll({@FindBy(id = "userid"),
 			@FindBy(xpath = "//*[@id=\"userid\"]")})
-	public static WebElement userIdId;
+	public WebElement userIdId;
 	
 	@FindAll({@FindBy(id = "password")})
-	public static WebElement passwordId;
+	public WebElement passwordId;
 	
 	@FindAll({@FindBy(id = "organizationcode")})
-	public static WebElement orgCodeId;
+	public WebElement orgCodeId;
+	
+	@FindAll({@FindBy(xpath = "//button[@type='submit']")})
+	public WebElement loginButton;
 	
 	@FindAll({@FindBy(id = "difficultylevel")})
-	public static WebElement questionLevelId;
+	public WebElement questionLevelId;
 	
 	@FindAll({@FindBy(id = "totalmarks")})
-	public static WebElement marksPerQuestionId;
+	public WebElement marksPerQuestionId;
 	
 	@FindAll({@FindBy(id = "status")})
-	public static WebElement activeQuestionId;
+	public WebElement activeQuestionId;
 	
 	@FindAll({@FindBy(id = "labelForOptions")})
-	public static WebElement optionsCountId;
+	public WebElement optionsCountId;
 	
 	@FindAll({@FindBy(id = "dataPath")})
-	public static WebElement chooseFile;
+	public WebElement chooseFile;
 	
 	//xpath
-	@FindAll({@FindBy(xpath = "//button[@type='submit']")})
-	public static WebElement loginBtnXpath;
-	
 	public static String courseManagementXpath = "//*[@id=\"pills-home-tab 0\"]";
 	public static String assessmentQueXpath = "/html/body/app-root/app-full-layout/div[1]/main/div/app-admin/div/div[2]/div/div/div/div[1]/div[1]/div/div";
 	public static String addNewQueXpath = "/html/body/app-root/app-full-layout/div[1]/main/div/app-assessment/div[2]/div/div/form/div[1]/button[1]/i";
