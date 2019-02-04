@@ -60,65 +60,69 @@ public class QuestionAdd {
 		Assert.assertNotEquals(driver.getCurrentUrl(), "http://192.168.91.48/login");
 	}
 
+	@Test(enabled = true, priority=2, dependsOnMethods = { "login" }, description
+	 = "add question manually", retryAnalyzer = common.CommonMethods.class) public
+	 void createQuestionManually() throws InterruptedException {
+	  
+	  driver.navigate().to(PageObjects.urlAdmin);
+	  
+	  CommonMethods.TestfindElement(pageObjects.courseManagementXpath, "", "click");
+	  CommonMethods.TestfindElement(pageObjects.assessmentQueXpath, "", "click");
+	  CommonMethods.TestfindElement(pageObjects.addNewQueXpath, "", "click");
+		
+	  // navigate que management
+	  driver.findElement(By.xpath(PageObjects.courseManagementXpath)).click();
+	  driver.findElement(By.xpath(PageObjects.assessmentQueXpath)).click();
+	  driver.findElement(By.xpath(PageObjects.addNewQueXpath)).click();
+	  
+	 // typing question
+	  driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).click();
+	  driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).clear();
+	  driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).sendKeys(
+	  PageObjects.typeQuestion);
+	  
+	  // typing meta data
+	  driver.findElement(By.xpath(PageObjects.metaDataXpath)).click();
+	  driver.findElement(By.xpath(PageObjects.metaDataXpath)).clear();
+	  driver.findElement(By.xpath(PageObjects.metaDataXpath)).
+	  sendKeys("test metadata");
+	  
+	  // select que level Select queLevel = new
+	  Select(driver.findElement(By.id(PageObjects.questionLevelId)));
+	  queLevel.selectByVisibleText(PageObjects.questionLevelValue);
+	  
+	  // select marks Select marksForQue = new
+	  Select(driver.findElement(By.id(PageObjects.marksPerQuestionId)));
+	  marksForQue.selectByVisibleText(PageObjects.marksPerQuestionIdValue);
+	 
+	  // make quest Active if
+	  (driver.findElement(By.id(PageObjects.activeQuestionId)).isSelected()) { //
+	  how to toggle System.out.println("selected"); } else {
+	  System.out.println("De-selected"); } // select OptionsCount
+	  
+	  Select optionsCount = new
+	  Select(driver.findElement(By.id(PageObjects.optionsCountId)));
+	  marksForQue.selectByVisibleText(PageObjects.optionsCountValue);
+	  
+	  // need for loop for options and ans selection // typing options
+	  driver.findElement(By.xpath(PageObjects.optionAXpath)).click();
+	  driver.findElement(By.xpath(PageObjects.optionAXpath)).clear();
+	  driver.findElement(By.xpath(PageObjects.optionAXpath)).sendKeys("option a");
+	  
+	  driver.findElement(By.xpath(PageObjects.optionBXpath)).click();
+	 driver.findElement(By.xpath(PageObjects.optionBXpath)).clear();
+	 driver.findElement(By.xpath(PageObjects.optionBXpath)).sendKeys("option b");
+	  
+	  // select option as answer
+	  driver.findElement(By.xpath(PageObjects.correctAnswerXpath)).click();
+	  
+	  // add question
+	  driver.findElement(By.xpath(PageObjects.addQuestionXpath)).click();
+	  
+	  // save driver.findElement(By.xpath(PageObjects.saveQuestionXpath)).click();
+	  }
+
 	/*
-	 * @Test(enabled = true, priority=2, dependsOnMethods = { "login" }, description
-	 * = "add question manually", retryAnalyzer = common.CommonMethods.class) public
-	 * void createQuestionManually() throws InterruptedException {
-	 * 
-	 * driver.navigate().to(PageObjects.urlAdmin);
-	 * 
-	 * // navigate que management
-	 * driver.findElement(By.xpath(PageObjects.courseManagementXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.assessmentQueXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.addNewQueXpath)).click();
-	 * 
-	 * // typing question
-	 * driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).clear();
-	 * driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).sendKeys(
-	 * PageObjects.typeQuestion);
-	 * 
-	 * // typing meta data
-	 * driver.findElement(By.xpath(PageObjects.metaDataXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.metaDataXpath)).clear();
-	 * driver.findElement(By.xpath(PageObjects.metaDataXpath)).
-	 * sendKeys("test metadata");
-	 * 
-	 * // select que level Select queLevel = new
-	 * Select(driver.findElement(By.id(PageObjects.questionLevelId)));
-	 * queLevel.selectByVisibleText(PageObjects.questionLevelValue);
-	 * 
-	 * // select marks Select marksForQue = new
-	 * Select(driver.findElement(By.id(PageObjects.marksPerQuestionId)));
-	 * marksForQue.selectByVisibleText(PageObjects.marksPerQuestionIdValue);
-	 * 
-	 * // make quest Active if
-	 * (driver.findElement(By.id(PageObjects.activeQuestionId)).isSelected()) { //
-	 * how to toggle System.out.println("selected"); } else {
-	 * System.out.println("De-selected"); } // select OptionsCount
-	 * 
-	 * Select optionsCount = new
-	 * Select(driver.findElement(By.id(PageObjects.optionsCountId)));
-	 * marksForQue.selectByVisibleText(PageObjects.optionsCountValue);
-	 * 
-	 * // need for loop for options and ans selection // typing options
-	 * driver.findElement(By.xpath(PageObjects.optionAXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.optionAXpath)).clear();
-	 * driver.findElement(By.xpath(PageObjects.optionAXpath)).sendKeys("option a");
-	 * 
-	 * driver.findElement(By.xpath(PageObjects.optionBXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.optionBXpath)).clear();
-	 * driver.findElement(By.xpath(PageObjects.optionBXpath)).sendKeys("option b");
-	 * 
-	 * // select option as answer
-	 * driver.findElement(By.xpath(PageObjects.correctAnswerXpath)).click();
-	 * 
-	 * // add question
-	 * driver.findElement(By.xpath(PageObjects.addQuestionXpath)).click();
-	 * 
-	 * // save driver.findElement(By.xpath(PageObjects.saveQuestionXpath)).click();
-	 * }
-	 * 
 	 * @Test(enabled = true, priority=3, dependsOnMethods = { "login",
 	 * "createQuestionManually" }, description = "add question by import",
 	 * retryAnalyzer = common.CommonMethods.class) public void questionAddImport()

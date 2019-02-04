@@ -55,7 +55,7 @@ public class CommonMethods implements IRetryAnalyzer {
 	public static void TestfindElement(WebElement data, String values, String action) throws Exception {
 
 		if (data != null) {
-
+			
 			if (action.equalsIgnoreCase("type")) {
 
 				data.click();

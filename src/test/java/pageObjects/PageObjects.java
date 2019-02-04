@@ -50,9 +50,19 @@ public class PageObjects {
 	public WebElement chooseFile;
 	
 	//xpath
-	public static String courseManagementXpath = "//*[@id=\"pills-home-tab 0\"]";
-	public static String assessmentQueXpath = "/html/body/app-root/app-full-layout/div[1]/main/div/app-admin/div/div[2]/div/div/div/div[1]/div[1]/div/div";
-	public static String addNewQueXpath = "/html/body/app-root/app-full-layout/div[1]/main/div/app-assessment/div[2]/div/div/form/div[1]/button[1]/i";
+	@FindAll({@FindBy(xpath = "//*[@id=\\\"pills-home-tab 0\\\"]")})
+	public WebElement courseManagementXpath;
+	//public static String courseManagementXpath = "//*[@id=\"pills-home-tab 0\"]";
+	
+	@FindAll({@FindBy(xpath = "/html/body/app-root/app-full-layout/div[1]/main/div/app-admin/div/div[2]/div/div/div/div[1]/div[1]/div/div")})
+	public WebElement assessmentQueXpath;
+	//public static String assessmentQueXpath = "/html/body/app-root/app-full-layout/div[1]/main/div/app-admin/div/div[2]/div/div/div/div[1]/div[1]/div/div";
+	
+	@FindAll({@FindBy(xpath = "/html/body/app-root/app-full-layout/div[1]/main/div/app-assessment/div[2]/div/div/form/div[1]/button[1]/i")})
+	public WebElement addNewQueXpath;
+	//public static String addNewQueXpath = "/html/body/app-root/app-full-layout/div[1]/main/div/app-assessment/div[2]/div/div/form/div[1]/button[1]/i";
+	
+	
 	public static String questionTextboxXpath = "//*[@id=\"questionTex\"]";
 	public static String metaDataXpath = "//input[@placeholder='Please enter metadata']";
 	public static String optionAXpath = "/html/body/modal-container/div/div/div[2]/app-assessment-new/form/div/div[2]/div[1]/div/div[1]/textarea";
