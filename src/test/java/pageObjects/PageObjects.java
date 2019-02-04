@@ -21,7 +21,7 @@ public class PageObjects {
 	public static String urlAdmin = "http://192.168.91.48/administration/admin";
 	
 	//id
-	@FindAll({@FindBy(id = "userid"),
+	/*@FindAll({@FindBy(id = "userid"),
 			@FindBy(xpath = "//*[@id=\"userid\"]")})
 	public WebElement userIdId;
 	
@@ -32,7 +32,7 @@ public class PageObjects {
 	public WebElement orgCodeId;
 	
 	@FindAll({@FindBy(xpath = "//button[@type='submit']")})
-	public WebElement loginButton;
+	public WebElement loginButton;*/
 	
 	@FindAll({@FindBy(id = "difficultylevel")})
 	public WebElement questionLevelId;

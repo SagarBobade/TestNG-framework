@@ -19,12 +19,14 @@ import com.paulhammant.ngwebdriver.NgWebDriver;
 import common.CommonMethods;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import pageObjects.PageObjects;
+import pageObjects.loginPage.LoginPage;
 
 public class QuestionAdd {
 
 	public static WebDriver driver;
-	public PageObjects pageObjects;
-
+	//public PageObjects pageObjects;
+	public LoginPage loginPage;
+	
 	public static String methodName;
 	public static boolean isFind = true;
 	public static XSSFWorkbook workbook;
@@ -32,7 +34,7 @@ public class QuestionAdd {
 
 	@BeforeClass
 	public void beforeClass() {
-		pageObjects = PageFactory.initElements(driver, PageObjects.class);
+		loginPage = PageFactory.initElements(driver, LoginPage.class);
 	}
 
 	@BeforeSuite
@@ -43,21 +45,19 @@ public class QuestionAdd {
 		NgWebDriver ngWebDriver = new NgWebDriver((JavascriptExecutor) driver);
 		ngWebDriver.waitForAngularRequestsToFinish();
 		driver.manage().window().maximize();
-
-		System.out.println("maximized");
 	}
 
 	@Test(enabled = true, priority = 1, description = "login to the application", retryAnalyzer = common.CommonMethods.class)
 	public void login() throws Exception {
 
-		driver.get("http://192.168.91.48/login");
-		CommonMethods.TestfindElement(pageObjects.userIdId, CommonMethods.getValue("userIdValue"), "type");
-		CommonMethods.TestfindElement(pageObjects.passwordId, CommonMethods.getValue("passwordValue"), "type");
-		CommonMethods.TestfindElement(pageObjects.orgCodeId, CommonMethods.getValue("orgCodeValue"), "type");
-		CommonMethods.TestfindElement(pageObjects.loginButton, "", "click");
+		driver.get(PageObjects.loginUrl);
+		CommonMethods.TestfindElement(loginPage.userIdId, CommonMethods.getValue("userIdValue"), "type");
+		CommonMethods.TestfindElement(loginPage.passwordId, CommonMethods.getValue("passwordValue"), "type");
+		CommonMethods.TestfindElement(loginPage.orgCodeId, CommonMethods.getValue("orgCodeValue"), "type");
+		CommonMethods.TestfindElement(loginPage.loginButton, "", "click");
 
 		Thread.sleep(5000);
-		Assert.assertNotEquals(driver.getCurrentUrl(), "http://192.168.91.48/login");
+		Assert.assertNotEquals(driver.getCurrentUrl(), PageObjects.loginUrl);
 	}
 
 	@Test(enabled = true, priority=2, dependsOnMethods = { "login" }, description
