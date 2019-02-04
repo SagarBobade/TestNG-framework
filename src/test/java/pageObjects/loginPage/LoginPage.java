@@ -13,14 +13,15 @@ public class LoginPage {
 		this.driver = driver;
 	}
 
+	//update key column in excel
 	@FindAll({ @FindBy(id = "userid"), @FindBy(xpath = "//*[@id=\"userid\"]") })
-	public WebElement userIdId;
+	public WebElement userId;
 
 	@FindAll({ @FindBy(id = "password") })
-	public WebElement passwordId;
+	public WebElement password;
 
 	@FindAll({ @FindBy(id = "organizationcode") })
-	public WebElement orgCodeId;
+	public WebElement orgCode;
 
 	@FindAll({ @FindBy(xpath = "//button[@type='submit']") })
 	public WebElement loginButton;
