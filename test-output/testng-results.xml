@@ -2,27 +2,23 @@
 <testng-results total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2019-01-31T11:00:23Z" name="Suite" finished-at="2019-01-31T11:00:34Z" duration-ms="11003">
+  <suite started-at="2019-02-06T10:45:26Z" name="Suite" finished-at="2019-02-06T10:45:30Z" duration-ms="3318">
     <groups>
     </groups>
-    <test started-at="2019-01-31T11:00:23Z" name="Test" finished-at="2019-01-31T11:00:34Z" duration-ms="11003">
+    <test started-at="2019-02-06T10:45:26Z" name="Test" finished-at="2019-02-06T10:45:30Z" duration-ms="3318">
       <class name="plain.QuestionAdd">
-        <test-method is-config="true" signature="openBrowser()[pri:0, instance:plain.QuestionAdd@247bddad]" started-at="2019-01-31T16:30:14Z" name="openBrowser" finished-at="2019-01-31T16:30:23Z" duration-ms="8611" status="PASS">
+        <test-method is-config="true" signature="openBrowser()[pri:0, instance:plain.QuestionAdd@7dc0f706]" started-at="2019-02-06T16:15:26Z" name="openBrowser" finished-at="2019-02-06T16:15:26Z" duration-ms="22" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- openBrowser -->
-        <test-method is-config="true" signature="beforeClass()[pri:0, instance:plain.QuestionAdd@247bddad]" started-at="2019-01-31T16:30:23Z" name="beforeClass" finished-at="2019-01-31T16:30:23Z" duration-ms="66" status="PASS">
+        <test-method is-config="true" signature="beforeClass()[pri:0, instance:plain.QuestionAdd@7dc0f706]" started-at="2019-02-06T16:15:26Z" name="beforeClass" finished-at="2019-02-06T16:15:26Z" duration-ms="39" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- beforeClass -->
-        <test-method signature="login()[pri:0, instance:plain.QuestionAdd@247bddad]" started-at="2019-01-31T16:30:23Z" name="login" description="login to the application" finished-at="2019-01-31T16:30:34Z" duration-ms="10919" status="PASS">
+        <test-method signature="login()[pri:0, instance:plain.QuestionAdd@7dc0f706]" started-at="2019-02-06T16:15:26Z" name="login" description="login to the application" finished-at="2019-02-06T16:15:30Z" duration-ms="3252" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- login -->
-        <test-method is-config="true" signature="closeBrowser()[pri:0, instance:plain.QuestionAdd@247bddad]" started-at="2019-01-31T16:30:34Z" name="closeBrowser" finished-at="2019-01-31T16:30:34Z" duration-ms="147" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- closeBrowser -->
       </class> <!-- plain.QuestionAdd -->
     </test> <!-- Test -->
   </suite> <!-- Suite -->

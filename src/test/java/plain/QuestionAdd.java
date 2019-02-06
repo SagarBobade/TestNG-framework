@@ -24,13 +24,16 @@ import pageObjects.loginPage.LoginPage;
 public class QuestionAdd {
 
 	public static WebDriver driver;
-	//public PageObjects pageObjects;
+	// public PageObjects pageObjects;
 	public LoginPage loginPage;
-	
-	public static String methodName;
-	public static boolean isFind = true;
+
+	/*
+	 * public static String sheetNameForMethodName;
+	 */ public static boolean isFind = true;
 	public static XSSFWorkbook workbook;
 	public static XSSFSheet sheet;
+	public static Boolean checkAPI = false;
+	public static Boolean checkUI = false;
 
 	@BeforeClass
 	public void beforeClass() {
@@ -39,26 +42,44 @@ public class QuestionAdd {
 
 	@BeforeSuite
 	public void openBrowser() throws IOException {
-		WebDriverManager.chromedriver().setup();
 
-		driver = new ChromeDriver();
-		NgWebDriver ngWebDriver = new NgWebDriver((JavascriptExecutor) driver);
-		ngWebDriver.waitForAngularRequestsToFinish();
-		driver.manage().window().maximize();
+		PageObjects.prop = CommonMethods.readPropertiesFile();
+
+		if (PageObjects.prop.getProperty("OnlyCheckAPI").equalsIgnoreCase("true")) {
+			checkAPI = true;
+			checkUI = false;
+		} else {
+			WebDriverManager.chromedriver().setup();
+			System.out.println("open method");
+
+			driver = new ChromeDriver();
+			NgWebDriver ngWebDriver = new NgWebDriver((JavascriptExecutor) driver);
+			ngWebDriver.waitForAngularRequestsToFinish();
+			driver.manage().window().maximize();
+		}
 	}
 
-	@Test(enabled = false, priority = 1, description = "login to the application", retryAnalyzer = common.CommonMethods.class)
+	@Test(enabled = true, priority = 1, description = "login to the application", retryAnalyzer = common.CommonMethods.class)
 	public void login() throws Exception {
 
-		driver.get(PageObjects.loginUrl);
-		//update key column in excel
-		CommonMethods.TestfindElement(loginPage.userId, CommonMethods.getValue("userIdValue"), "type");
-		CommonMethods.TestfindElement(loginPage.password, CommonMethods.getValue("passwordValue"), "type");
-		CommonMethods.TestfindElement(loginPage.orgCode, CommonMethods.getValue("orgCodeValue"), "type");
-		CommonMethods.TestfindElement(loginPage.loginButton, "", "click");
+		PageObjects.methodNameToGetSheetName = new Object() {
+		}.getClass().getEnclosingMethod().getName();
 
-		Thread.sleep(5000);
-		Assert.assertNotEquals(driver.getCurrentUrl(), PageObjects.loginUrl);
+		if (checkAPI == false && checkUI == true) {
+			driver.get(PageObjects.loginUrl);
+			CommonMethods.TestfindElement(loginPage.userId, CommonMethods.getValue("userIdValue"), "type");
+			CommonMethods.TestfindElement(loginPage.password, CommonMethods.getValue("passwordValue"), "type");
+			CommonMethods.TestfindElement(loginPage.orgCode, CommonMethods.getValue("orgCodeValue"), "type");
+			CommonMethods.TestfindElement(loginPage.loginButton, "", "click");
+
+			Thread.sleep(5000);
+			Assert.assertEquals(driver.getCurrentUrl(), PageObjects.loginUrl);
+		} else {
+			Assert.assertEquals(api.CommonMethods.hitUserAuthAPI("http://192.168.91.48/connect/token/", "ltfs",
+					"sammir",
+					"EED96928D820D2DE920F2294988414577C0069F878011A20F8091ED442D36AB73C93A2675567CA015A10337AE204202FEAB2AD3FC2353A1682F9190A33171E8A"),
+					200);
+		}
 	}
 
 	/*
@@ -173,7 +194,7 @@ public class QuestionAdd {
 	 * @AfterTest public void afterEachTest() { PageObjects.counterOfTry = 0;
 	 * PageObjects.retryLimit = 0; }
 	 */
-	@AfterSuite(enabled = true, alwaysRun = true)
+	@AfterSuite(enabled = false)
 	public void closeBrowser() {
 		driver.close();
 	}

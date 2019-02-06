@@ -1,5 +1,7 @@
 package pageObjects;
 
+import java.util.Properties;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindAll;
@@ -10,6 +12,8 @@ import org.openqa.selenium.support.FindBy;
 public class PageObjects {
 
 	WebDriver driver = null;
+	public static String propertiesFilePath = "D://my data//Eclipse - jan18 19 workspace//ModuleTestA//src//test//java//Configuration.Properties";
+	public static Properties prop = null;
 	
 	public PageObjects(WebDriver driver)
 	{
@@ -86,5 +90,7 @@ public class PageObjects {
 	public static int retryLimit = 3;
 	public static String QuestionAddSheetNameForKeyValue = "QuestionAdd";
 	
-	
+	//other
+	public static String methodNameToGetSheetName = null;
+	public static String tokenValue = "";
 }
