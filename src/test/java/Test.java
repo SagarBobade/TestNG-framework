@@ -1,19 +1,13 @@
-/*
- * public class Test {
- * 
- * 
- * public static void fun() {
- * 
- * String name = new Object(){}.getClass().getEnclosingMethod().getName();
- * System.out.println(name); } public static void main(String[] args) {
- * 
- * fun();
- * 
- * }
- * 
- * }
- */
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+
+import pageObjects.PageObjects;
 
 public class Test {
 
@@ -28,6 +22,8 @@ public class Test {
 	      
 		System.out.println(methodName);
 	}
+	
+
 	public static void main(String[] args) {
 
 		fun();

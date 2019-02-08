@@ -5,10 +5,8 @@
     <classes>
       <class name="plain.QuestionAdd">
         <methods>
-          <include name="beforeClass"/>
           <include name="openBrowser"/>
           <include name="login"/>
-          <include name="closeBrowser"/>
         </methods>
       </class> <!-- plain.QuestionAdd -->
     </classes>

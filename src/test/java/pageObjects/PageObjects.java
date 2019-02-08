@@ -7,11 +7,15 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+
 
 
 public class PageObjects {
 
-	WebDriver driver = null;
+	public static WebDriver driver = null;
 	public static String propertiesFilePath = "D://my data//Eclipse - jan18 19 workspace//ModuleTestA//src//test//java//Configuration.Properties";
 	public static Properties prop = null;
 	
@@ -93,4 +97,11 @@ public class PageObjects {
 	//other
 	public static String methodNameToGetSheetName = null;
 	public static String tokenValue = "";
+	public static WebElement lastAccessedWebElement = null;
+	public static boolean alreadyCatchedException = false;
+	public static ExtentReports extent;
+	public static ExtentHtmlReporter reporter;
+	public static String htmlDirectoryPath = "D://my data//Eclipse - jan18 19 workspace//ModuleTestA//test-output//Reports";
+	public static String htmlReportPath = htmlDirectoryPath + "//Report.html";
+	public static ExtentTest logger = null;
 }

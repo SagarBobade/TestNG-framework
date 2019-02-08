@@ -1,6 +1,9 @@
 package plain;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -10,20 +13,27 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.paulhammant.ngwebdriver.NgWebDriver;
 
 import common.CommonMethods;
+import common.SendMail;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import pageObjects.PageObjects;
 import pageObjects.loginPage.LoginPage;
 
 public class QuestionAdd {
 
-	public static WebDriver driver;
+	// public static WebDriver driver;
 	// public PageObjects pageObjects;
 	public LoginPage loginPage;
 
@@ -33,11 +43,11 @@ public class QuestionAdd {
 	public static XSSFWorkbook workbook;
 	public static XSSFSheet sheet;
 	public static Boolean checkAPI = false;
-	public static Boolean checkUI = false;
-
+	public static Boolean checkUI = true;
+	
 	@BeforeClass
 	public void beforeClass() {
-		loginPage = PageFactory.initElements(driver, LoginPage.class);
+		loginPage = PageFactory.initElements(PageObjects.driver, LoginPage.class);
 	}
 
 	@BeforeSuite
@@ -45,40 +55,66 @@ public class QuestionAdd {
 
 		PageObjects.prop = CommonMethods.readPropertiesFile();
 
+		File directory = new File(PageObjects.htmlDirectoryPath);
+		if (!directory.exists()) {
+			directory.mkdir();
+		}
+		PageObjects.reporter = new ExtentHtmlReporter(PageObjects.htmlReportPath);
+
 		if (PageObjects.prop.getProperty("OnlyCheckAPI").equalsIgnoreCase("true")) {
 			checkAPI = true;
 			checkUI = false;
 		} else {
-			WebDriverManager.chromedriver().setup();
-			System.out.println("open method");
-
-			driver = new ChromeDriver();
-			NgWebDriver ngWebDriver = new NgWebDriver((JavascriptExecutor) driver);
+			WebDriverManager.firefoxdriver().setup();
+			PageObjects.driver = new ChromeDriver();
+			NgWebDriver ngWebDriver = new NgWebDriver((JavascriptExecutor) PageObjects.driver);
 			ngWebDriver.waitForAngularRequestsToFinish();
-			driver.manage().window().maximize();
+			PageObjects.driver.manage().window().maximize();
 		}
 	}
 
-	@Test(enabled = true, priority = 1, description = "login to the application", retryAnalyzer = common.CommonMethods.class)
+	@BeforeTest
+	public void beforeTest() {
+		PageObjects.extent = new ExtentReports();
+		PageObjects.extent.attachReporter(PageObjects.reporter);
+	}
+
+	@AfterTest
+	public void afterTest() {
+		PageObjects.extent.flush();
+	}
+
+	@Test(enabled = true, priority = 1, description = "login to the application")
 	public void login() throws Exception {
 
 		PageObjects.methodNameToGetSheetName = new Object() {
 		}.getClass().getEnclosingMethod().getName();
 
-		if (checkAPI == false && checkUI == true) {
-			driver.get(PageObjects.loginUrl);
-			CommonMethods.TestfindElement(loginPage.userId, CommonMethods.getValue("userIdValue"), "type");
-			CommonMethods.TestfindElement(loginPage.password, CommonMethods.getValue("passwordValue"), "type");
-			CommonMethods.TestfindElement(loginPage.orgCode, CommonMethods.getValue("orgCodeValue"), "type");
-			CommonMethods.TestfindElement(loginPage.loginButton, "", "click");
+		ExtentTest logger = PageObjects.extent.createTest(PageObjects.methodNameToGetSheetName);
 
-			Thread.sleep(5000);
-			Assert.assertEquals(driver.getCurrentUrl(), PageObjects.loginUrl);
-		} else {
-			Assert.assertEquals(api.CommonMethods.hitUserAuthAPI("http://192.168.91.48/connect/token/", "ltfs",
-					"sammir",
-					"EED96928D820D2DE920F2294988414577C0069F878011A20F8091ED442D36AB73C93A2675567CA015A10337AE204202FEAB2AD3FC2353A1682F9190A33171E8A"),
-					200);
+		try {
+			if (checkAPI == false && checkUI == true) {
+				PageObjects.driver.get(PageObjects.loginUrl);
+				CommonMethods.TestfindElement(logger, loginPage.getUserId(), CommonMethods.getValue("userIdValue"),
+						"type");
+				CommonMethods.TestfindElement(logger, loginPage.getPassword(), CommonMethods.getValue("passwordValue"),
+						"type");
+				CommonMethods.TestfindElement(logger, loginPage.getOrgCode(), CommonMethods.getValue("orgCodeValue"),
+						"type");
+				CommonMethods.TestfindElement(logger, loginPage.getLoginButton(), "", "click");
+
+				Thread.sleep(2000);
+				Assert.assertEquals(PageObjects.driver.getCurrentUrl(), PageObjects.loginUrl);
+				logger.log(Status.PASS, "login successfully");
+			} else {
+				Assert.assertEquals(api.CommonMethods.hitUserAuthAPI("http://192.168.91.48/connect/token/", "ltfs",
+						"sammir",
+						"EED96928D820D2DE920F2294988414577C0069F878011A20F8091ED442D36AB73C93A2675567CA015A10337AE204202FEAB2AD3FC2353A1682F9190A33171E8A"),
+						200);
+				logger.log(Status.PASS, PageObjects.methodNameToGetSheetName + " successful");
+			}
+		} catch (Exception e) {
+			CommonMethods.insideCatchOne(logger);
 		}
 	}
 
@@ -194,9 +230,26 @@ public class QuestionAdd {
 	 * @AfterTest public void afterEachTest() { PageObjects.counterOfTry = 0;
 	 * PageObjects.retryLimit = 0; }
 	 */
-	@AfterSuite(enabled = false)
+	@AfterSuite(enabled = true)
 	public void closeBrowser() {
-		driver.close();
+		// PageObjects.driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL,"t");
+		System.out.println("in after suit---------");
+		if(PageObjects.prop.getProperty("EnableMailShoot").equalsIgnoreCase("true")) {
+		String from = PageObjects.prop.getProperty("From");
+		
+		String MailIdPassword = PageObjects.prop.getProperty("MailIdPassword");
+		
+		String toCommaSeperated  = PageObjects.prop.getProperty("To");
+		List<String> toList = Arrays.asList(toCommaSeperated.split("\\s*,\\s*"));
+		 String []to = toList.toArray(new String[toList.size()]);
+		 
+		 String ccCommaSeperated = PageObjects.prop.getProperty("Cc");
+	        List<String> ccList = Arrays.asList(ccCommaSeperated.split("\\s*,\\s*"));
+	        String []cc = toList.toArray(new String[ccList.size()]);
+		
+		SendMail.sendMail(from, MailIdPassword, to, cc);	
+	}
+		PageObjects.driver.get(PageObjects.htmlReportPath);
 	}
 
 }
