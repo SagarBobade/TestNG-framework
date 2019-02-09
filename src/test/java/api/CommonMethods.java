@@ -9,7 +9,8 @@ public class CommonMethods {
 
 public static int hitUserAuthAPI(String userAuthAPIUrl, String display, String username, String password) {
 		
-	System.out.println("dfdfdfd");
+	System.out.println(userAuthAPIUrl +" "+display+" "+username+" "+password);
+	System.out.println("heyyyyyyyyyyyyyy");
 		RestAssured.baseURI = userAuthAPIUrl;
 		RequestSpecification reqSpec = RestAssured.given();
 		String bearerToken=null;

@@ -2,14 +2,16 @@ package plain;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
@@ -33,18 +35,17 @@ import pageObjects.loginPage.LoginPage;
 
 public class QuestionAdd {
 
-	// public static WebDriver driver;
-	// public PageObjects pageObjects;
+
 	public LoginPage loginPage;
 
-	/*
-	 * public static String sheetNameForMethodName;
-	 */ public static boolean isFind = true;
+
+	public static boolean isFind = true;
 	public static XSSFWorkbook workbook;
 	public static XSSFSheet sheet;
 	public static Boolean checkAPI = false;
 	public static Boolean checkUI = true;
-	
+	private String browserName = null;
+
 	@BeforeClass
 	public void beforeClass() {
 		loginPage = PageFactory.initElements(PageObjects.driver, LoginPage.class);
@@ -65,8 +66,21 @@ public class QuestionAdd {
 			checkAPI = true;
 			checkUI = false;
 		} else {
-			WebDriverManager.firefoxdriver().setup();
-			PageObjects.driver = new ChromeDriver();
+			browserName = PageObjects.prop.getProperty("BrowserName");
+			switch (browserName) {
+			case "chrome":
+				WebDriverManager.chromedriver().setup();
+				PageObjects.driver = new ChromeDriver();
+				break;
+			case "firefox":
+				WebDriverManager.firefoxdriver().setup();
+				PageObjects.driver = new FirefoxDriver();
+				break;
+			case "ie":
+				WebDriverManager.iedriver().setup();
+				PageObjects.driver = new InternetExplorerDriver();
+				break;
+			}
 			NgWebDriver ngWebDriver = new NgWebDriver((JavascriptExecutor) PageObjects.driver);
 			ngWebDriver.waitForAngularRequestsToFinish();
 			PageObjects.driver.manage().window().maximize();
@@ -89,7 +103,7 @@ public class QuestionAdd {
 
 		PageObjects.methodNameToGetSheetName = new Object() {
 		}.getClass().getEnclosingMethod().getName();
-
+System.out.println("we are in : "+PageObjects.methodNameToGetSheetName);
 		ExtentTest logger = PageObjects.extent.createTest(PageObjects.methodNameToGetSheetName);
 
 		try {
@@ -107,11 +121,15 @@ public class QuestionAdd {
 				Assert.assertEquals(PageObjects.driver.getCurrentUrl(), PageObjects.loginUrl);
 				logger.log(Status.PASS, "login successfully");
 			} else {
-				Assert.assertEquals(api.CommonMethods.hitUserAuthAPI("http://192.168.91.48/connect/token/", "ltfs",
-						"sammir",
-						"EED96928D820D2DE920F2294988414577C0069F878011A20F8091ED442D36AB73C93A2675567CA015A10337AE204202FEAB2AD3FC2353A1682F9190A33171E8A"),
-						200);
-				logger.log(Status.PASS, PageObjects.methodNameToGetSheetName + " successful");
+				
+				Assert.assertEquals(api.CommonMethods.hitUserAuthAPI(
+						CommonMethods.getValue("API request"), 
+						CommonMethods.getValue("orgCodeValue"),
+						CommonMethods.getValue("userIdValue"),
+						CommonMethods.getValue("EncodedPassword")),
+						CommonMethods.getValue("Expected response code"));
+				
+				logger.log(Status.PASS, PageObjects.methodNameToGetSheetName + " successfuldf");
 			}
 		} catch (Exception e) {
 			CommonMethods.insideCatchOne(logger);
@@ -231,24 +249,42 @@ public class QuestionAdd {
 	 * PageObjects.retryLimit = 0; }
 	 */
 	@AfterSuite(enabled = true)
-	public void closeBrowser() {
+	public void closeBrowser() throws ParseException {
 		// PageObjects.driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL,"t");
 		System.out.println("in after suit---------");
-		if(PageObjects.prop.getProperty("EnableMailShoot").equalsIgnoreCase("true")) {
-		String from = PageObjects.prop.getProperty("From");
+		if (PageObjects.prop.getProperty("EnableMailShoot").equalsIgnoreCase("true")) {
+			String from = PageObjects.prop.getProperty("From");
+
+			String MailIdPassword = PageObjects.prop.getProperty("MailIdPassword");
+
+			String toCommaSeperated = PageObjects.prop.getProperty("To");
+			List<String> toList = Arrays.asList(toCommaSeperated.split("\\s*,\\s*"));
+			String[] to = toList.toArray(new String[toList.size()]);
+
+			String ccCommaSeperated = PageObjects.prop.getProperty("Cc");
+			List<String> ccList = Arrays.asList(ccCommaSeperated.split("\\s*,\\s*"));
+			String[] cc = toList.toArray(new String[ccList.size()]);
+
+			SendMail.sendMail(from, MailIdPassword, to, cc);
+		}
+		if (PageObjects.prop.getProperty("OnlyCheckAPI").equalsIgnoreCase("true")) {
+		browserName = PageObjects.prop.getProperty("BrowserName");
+		switch (browserName) {
+		case "chrome":
+			WebDriverManager.chromedriver().setup();
+			PageObjects.driver = new ChromeDriver();
+			break;
+		case "firefox":
+			WebDriverManager.firefoxdriver().setup();
+			PageObjects.driver = new FirefoxDriver();
+			break;
+		case "ie":
+			WebDriverManager.iedriver().setup();
+			PageObjects.driver = new InternetExplorerDriver();
+			break;
 		
-		String MailIdPassword = PageObjects.prop.getProperty("MailIdPassword");
-		
-		String toCommaSeperated  = PageObjects.prop.getProperty("To");
-		List<String> toList = Arrays.asList(toCommaSeperated.split("\\s*,\\s*"));
-		 String []to = toList.toArray(new String[toList.size()]);
-		 
-		 String ccCommaSeperated = PageObjects.prop.getProperty("Cc");
-	        List<String> ccList = Arrays.asList(ccCommaSeperated.split("\\s*,\\s*"));
-	        String []cc = toList.toArray(new String[ccList.size()]);
-		
-		SendMail.sendMail(from, MailIdPassword, to, cc);	
 	}
+		}
 		PageObjects.driver.get(PageObjects.htmlReportPath);
 	}
 

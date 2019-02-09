@@ -71,7 +71,7 @@ public class CommonMethods implements IRetryAnalyzer {
 				valuefromExcel = sheet.getRow(i).getCell(1).toString();
 				workbook.close();
 				inputStream.close();
-				System.out.println(valuefromExcel);
+				System.out.println("We found :" + valuefromExcel);
 				return valuefromExcel;
 			} else {
 				i++;
