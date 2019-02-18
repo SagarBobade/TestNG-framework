@@ -3,12 +3,12 @@
 <suite name="Failed suite [Default suite]">
   <test name="Default test(failed)">
     <classes>
-      <class name="ReTryTest">
+      <class name="TestTestNG">
         <methods>
-          <include name="openBrowser"/>
-          <include name="setLginCred"/>
+          <include name="sampleTest"/>
+          <include name="setUp"/>
         </methods>
-      </class> <!-- ReTryTest -->
+      </class> <!-- TestTestNG -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

@@ -11,6 +11,7 @@
           <include name="afterTest"/>
           <include name="closeBrowser"/>
           <include name="beforeTest"/>
+          <include name="createQuestionManually"/>
         </methods>
       </class> <!-- plain.QuestionAdd -->
     </classes>

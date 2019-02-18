@@ -49,13 +49,13 @@ public class LoginPage {
 	}
 
 	//update key column in excel
-	@FindAll({ @FindBy(id = "userid"), @FindBy(xpath = "//*[@id=\"userid\"]") })
+	@FindAll({ @FindBy(id = "userid"), @FindBy(xpath = "//*[@id='userid']") })
 	private WebElement userId;
 
 	@FindAll({ @FindBy(id = "password") })
 	private WebElement password;
 
-	@FindAll({ @FindBy(id = "organizationcodeD") })
+	@FindAll({ @FindBy(id = "organizationcode") })
 	private WebElement orgCode;
 
 	@FindAll({ @FindBy(xpath = "//button[@type='submit']") })

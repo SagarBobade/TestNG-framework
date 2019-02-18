@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -82,74 +83,78 @@ public class CommonMethods implements IRetryAnalyzer {
 		return null;
 	}
 
+	public static List<WebElement> wait(List<WebElement> list) throws InterruptedException {
+
+		System.out.println("in wait after hiii");
+		WebDriverWait wait = new WebDriverWait(PageObjects.driver, 20);
+		System.out.println("in wait");
+		
+		wait.until(ExpectedConditions.visibilityOfAllElements(list));
+		
+		System.out.println("in wait before return");
+		return list;
+	}
+	
 	public static WebElement wait(WebElement webElement) throws InterruptedException {
 
+		System.out.println("in wait after hiii");
 		WebDriverWait wait = new WebDriverWait(PageObjects.driver, 20);
+		System.out.println("in wait");
 		wait.until(ExpectedConditions.elementToBeClickable(webElement));
-		// PageObjects.lastAccessedWebElement =
-		// webElement.getClass().getName().toString();
-		// System.out.println("X "+PageObjects.lastAccessedWebElement);
+		
+		System.out.println("in wait before return");
 		return webElement;
 	}
-
+	
 	public static void TestfindElement(ExtentTest logger, WebElement data, String values, String action)
 			throws Exception {
-		
 		WebElement foundElement;
-		JavascriptExecutor  js = (JavascriptExecutor) PageObjects.driver;
-		
-	try {
-		if (data != null) {
+		JavascriptExecutor js = (JavascriptExecutor) PageObjects.driver;
 
-		/*	WebElement foundElement = null;
-			JavascriptExecutor js = (JavascriptExecutor) PageObjects.driver;
-			js.executeScript("arguments[0].setAttribute('style', 'background: yellow; border: 2px solid red;');",
-					foundElement);
-*/
-			foundElement = wait(data);
-			PageObjects.lastAccessedWebElement = data ;
-			
-			
-			js.executeScript("arguments[0].setAttribute('style', 'background: yellow; border: 2px solid red;');",
-					foundElement);
-			
-			/*	
-			js.executeScript("arguments[0].setAttribute('style', 'background: yellow; border: 2px solid red;');",
-					foundElement);
-*/
-			switch (action) {
-			case "type":
-				foundElement.click();
-				foundElement.clear();
-				foundElement.sendKeys(values);
-				logger.info("Typed - " + values);
-				break;
-			case "click":
-				foundElement.click();
-				logger.info("Clicked");
-				break;
-			case "tick":
-				foundElement.click();
-				logger.info("Ticked checkbox");
-				break;
-			case "selectRadio":
-				foundElement.click();
-				logger.info("Selected radio button");
-				break;
-			default:
-				throw new Exception("locatorType is not from defined set");
+		try {
+			if (data != null) {
+				foundElement = wait(data);
+				PageObjects.lastAccessedWebElement = data;
 
+				js.executeScript("arguments[0].setAttribute('style', 'background: yellow; border: 2px solid red;');",
+						foundElement);
+
+				switch (action) {
+				case "type":
+					foundElement.click();
+					foundElement.clear();
+					foundElement.sendKeys(values);
+					logger.info("Typed - " + values);
+					break;
+				case "click":
+					foundElement.click();
+					logger.info("Clicked");
+					break;
+				case "tick":
+					foundElement.click();
+					logger.info("Ticked checkbox");
+					break;
+				case "selectRadio":
+					foundElement.click();
+					logger.info("Selected radio button");
+					break;
+				default:
+					throw new Exception("locatorType is not from defined set");
+
+				}
+
+				try {
+					js.executeScript("arguments[0].setAttribute('style', 'background: none; border: 2px solid none;');",
+							foundElement);
+				} catch (Exception e) {
+					System.out.println("catched click wala");
+				}
 			}
-			js.executeScript("arguments[0].setAttribute('style', 'background: none; border: 2px solid none;');",
-					foundElement);
+		} catch (Exception e) {
+			CommonMethods.insideCatch(logger, js);
 		}
-		}
-		catch (Exception e) {
-			CommonMethods.insideCatch(logger,js);
-		}
-	return;
-		}
-
+		return;
+	}
 
 	public static Properties readPropertiesFile() {
 		prop = new Properties();
@@ -192,33 +197,34 @@ public class CommonMethods implements IRetryAnalyzer {
 		FileUtils.copyFile(source, finalDestination);
 		return destination;
 	}
-	
+
 	public static void insideCatch(ExtentTest logger, JavascriptExecutor js) throws IOException, Exception {
 
 		System.out.println("inside two paramters catch method");
 		if (!PageObjects.prop.getProperty("OnlyCheckAPI").equalsIgnoreCase("true")) {
-			
+
 			js.executeScript("arguments[0].setAttribute('style', 'background: yellow; border: 2px solid red;');",
 					PageObjects.lastAccessedWebElement);
-			
+
 			logger.log(Status.FAIL, "Last action was on below screenshot : ");
 			logger.log(Status.FAIL, (Markup) logger.addScreenCaptureFromPath(
 					CommonMethods.getScreenshot(PageObjects.driver, PageObjects.methodNameToGetSheetName)));
 			PageObjects.alreadyCatchedException = true;
 		}
+		return;
 	}
-	
+
 	public static void insideCatchOne(ExtentTest logger) throws IOException, Exception {
-		
-		if(PageObjects.alreadyCatchedException = false) {
-		System.out.println("inside One paramters catch method");
-		
-		if (!PageObjects.prop.getProperty("OnlyCheckAPI").equalsIgnoreCase("true")) {
-			
-			logger.log(Status.FAIL, "Last action was on below screenshot : ");
-			logger.log(Status.FAIL, (Markup) logger.addScreenCaptureFromPath(
-					CommonMethods.getScreenshot(PageObjects.driver, PageObjects.methodNameToGetSheetName)));
-		}
+
+		if (PageObjects.alreadyCatchedException = false) {
+			System.out.println("inside One paramters catch method");
+
+			if (!PageObjects.prop.getProperty("OnlyCheckAPI").equalsIgnoreCase("true")) {
+
+				logger.log(Status.FAIL, "Last action was on below screenshot : ");
+				logger.log(Status.FAIL, (Markup) logger.addScreenCaptureFromPath(
+						CommonMethods.getScreenshot(PageObjects.driver, PageObjects.methodNameToGetSheetName)));
+			}
 		}
 	}
 }

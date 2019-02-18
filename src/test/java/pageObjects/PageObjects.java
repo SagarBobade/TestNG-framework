@@ -21,26 +21,12 @@ public class PageObjects {
 	
 	public PageObjects(WebDriver driver)
 	{
-		this.driver = driver;
+		PageObjects.driver = driver;
 	}
 	
 	//url
 	public static String loginUrl = "http://192.168.91.48/login";
-	public static String urlAdmin = "http://192.168.91.48/administration/admin";
-	
-	//id
-	/*@FindAll({@FindBy(id = "userid"),
-			@FindBy(xpath = "//*[@id=\"userid\"]")})
-	public WebElement userIdId;
-	
-	@FindAll({@FindBy(id = "password")})
-	public WebElement passwordId;
-	
-	@FindAll({@FindBy(id = "organizationcode")})
-	public WebElement orgCodeId;
-	
-	@FindAll({@FindBy(xpath = "//button[@type='submit']")})
-	public WebElement loginButton;*/
+	public static String urlAdmin = "http://192.168.91.48/admin";
 	
 	@FindAll({@FindBy(id = "difficultylevel")})
 	public WebElement questionLevelId;
@@ -57,9 +43,32 @@ public class PageObjects {
 	@FindAll({@FindBy(id = "dataPath")})
 	public WebElement chooseFile;
 	
-	//xpath
-	@FindAll({@FindBy(xpath = "//*[@id=\\\"pills-home-tab 0\\\"]")})
-	public WebElement courseManagementXpath;
+	/*
+	 * @FindAll({@FindBy(xpath = "//*[@href='/admin']"),
+	 * 
+	 * @FindBy(xpath = "//div//a[@href='admin']"),
+	 * 
+	 * @FindBy(xpath = "/html/body/app-root/app-full-layout/header/div[4]/div[1]"),
+	 * })
+	 */
+	@FindAll({@FindBy(xpath = "/html/body/app-root/app-full-layout/header/div[4]/div[1]")})
+	private static WebElement administration;
+	
+	public static WebElement getAdministration() {
+		return administration;
+	}
+	public void setAdministration(WebElement administration) {
+		PageObjects.administration = administration;
+	}
+
+	/*
+	 * public WebElement getCourseManagementXpath() { return courseManagementXpath;
+	 * } public void setCourseManagementXpath(WebElement courseManagementXpath) {
+	 * this.courseManagementXpath = courseManagementXpath; }
+	 * 
+	 * @FindAll({@FindBy(xpath = "//*[@id=\\\"pills-home-tab 0\\\"]")}) public
+	 * WebElement courseManagementXpath;
+	 */
 	//public static String courseManagementXpath = "//*[@id=\"pills-home-tab 0\"]";
 	
 	@FindAll({@FindBy(xpath = "/html/body/app-root/app-full-layout/div[1]/main/div/app-admin/div/div[2]/div/div/div/div[1]/div[1]/div/div")})
@@ -103,5 +112,5 @@ public class PageObjects {
 	public static ExtentHtmlReporter reporter;
 	public static String htmlDirectoryPath = "D://my data//Eclipse - jan18 19 workspace//ModuleTestA//test-output//Reports";
 	public static String htmlReportPath = htmlDirectoryPath + "//Report.html";
-	public static ExtentTest logger = null;
+	//public static ExtentTest logger = null;
 }

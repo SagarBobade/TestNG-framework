@@ -1,33 +1,24 @@
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.net.URL;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
-
-import pageObjects.PageObjects;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class Test {
 
-	static String methodName;
-	
-	public static void fun() {
-		
-		 methodName = new Object() {}
-	      .getClass()
-	      .getEnclosingMethod()
-	      .getName();
-	      
-		System.out.println(methodName);
-	}
-	
+	public static void main(String[] args) throws Exception {
+		// Change this to match the location of your server
+		URL server = new URL("http://192.168.91.58:4444/wd/hub");
 
-	public static void main(String[] args) {
+		DesiredCapabilities capabilities = new DesiredCapabilities();
+		capabilities.setBrowserName("firefox");
 
-		fun();
+		System.out.println("Connecting to " + server);
 
-	}
+		WebDriver driver = new RemoteWebDriver(server, capabilities);
 
+		driver.get("http://www.google.com");
+
+		driver.quit();
+	}	
 }

@@ -9,7 +9,9 @@ import java.util.List;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.support.PageFactory;
@@ -31,13 +33,14 @@ import common.CommonMethods;
 import common.SendMail;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import pageObjects.PageObjects;
+import pageObjects.dashboard.administration.Administration;
 import pageObjects.loginPage.LoginPage;
 
 public class QuestionAdd {
 
-
 	public LoginPage loginPage;
-
+	public PageObjects pageObjects;
+	public Administration administration;
 
 	public static boolean isFind = true;
 	public static XSSFWorkbook workbook;
@@ -45,10 +48,16 @@ public class QuestionAdd {
 	public static Boolean checkAPI = false;
 	public static Boolean checkUI = true;
 	private String browserName = null;
+	public ExtentTest logger = null;
+	public WebElement requiredTab = null;
 
 	@BeforeClass
 	public void beforeClass() {
+		System.out.println("**************");
 		loginPage = PageFactory.initElements(PageObjects.driver, LoginPage.class);
+		administration = PageFactory.initElements(PageObjects.driver, Administration.class);
+		pageObjects = PageFactory.initElements(PageObjects.driver, PageObjects.class);
+
 	}
 
 	@BeforeSuite
@@ -69,6 +78,7 @@ public class QuestionAdd {
 			browserName = PageObjects.prop.getProperty("BrowserName");
 			switch (browserName) {
 			case "chrome":
+				System.out.println("in chrome");
 				WebDriverManager.chromedriver().setup();
 				PageObjects.driver = new ChromeDriver();
 				break;
@@ -79,6 +89,12 @@ public class QuestionAdd {
 			case "ie":
 				WebDriverManager.iedriver().setup();
 				PageObjects.driver = new InternetExplorerDriver();
+				break;
+			case "headless":
+				ChromeOptions options = new ChromeOptions();
+				options.addArguments("headless");
+				options.addArguments("window-size=1200x600");
+				PageObjects.driver = new ChromeDriver(options);
 				break;
 			}
 			NgWebDriver ngWebDriver = new NgWebDriver((JavascriptExecutor) PageObjects.driver);
@@ -103,8 +119,7 @@ public class QuestionAdd {
 
 		PageObjects.methodNameToGetSheetName = new Object() {
 		}.getClass().getEnclosingMethod().getName();
-System.out.println("we are in : "+PageObjects.methodNameToGetSheetName);
-		ExtentTest logger = PageObjects.extent.createTest(PageObjects.methodNameToGetSheetName);
+		logger = PageObjects.extent.createTest(PageObjects.methodNameToGetSheetName);
 
 		try {
 			if (checkAPI == false && checkUI == true) {
@@ -117,18 +132,18 @@ System.out.println("we are in : "+PageObjects.methodNameToGetSheetName);
 						"type");
 				CommonMethods.TestfindElement(logger, loginPage.getLoginButton(), "", "click");
 
-				Thread.sleep(2000);
-				Assert.assertEquals(PageObjects.driver.getCurrentUrl(), PageObjects.loginUrl);
+				Thread.sleep(5000);
+				// Assert.assertEquals(PageObjects.driver.getCurrentUrl(),
+				// PageObjects.loginUrl);
 				logger.log(Status.PASS, "login successfully");
 			} else {
-				
-				Assert.assertEquals(api.CommonMethods.hitUserAuthAPI(
-						CommonMethods.getValue("API request"), 
-						CommonMethods.getValue("orgCodeValue"),
-						CommonMethods.getValue("userIdValue"),
-						CommonMethods.getValue("EncodedPassword")),
+
+				Assert.assertEquals(
+						api.CommonMethods.hitUserAuthAPI(CommonMethods.getValue("API request"),
+								CommonMethods.getValue("orgCodeValue"), CommonMethods.getValue("userIdValue"),
+								CommonMethods.getValue("EncodedPassword")),
 						CommonMethods.getValue("Expected response code"));
-				
+
 				logger.log(Status.PASS, PageObjects.methodNameToGetSheetName + " successfuldf");
 			}
 		} catch (Exception e) {
@@ -136,70 +151,90 @@ System.out.println("we are in : "+PageObjects.methodNameToGetSheetName);
 		}
 	}
 
-	/*
-	 * @Test(enabled = true, priority=2, dependsOnMethods = { "login" }, description
-	 * = "add question manually", retryAnalyzer = common.CommonMethods.class) public
-	 * void createQuestionManually() throws InterruptedException {
-	 * 
-	 * driver.navigate().to(PageObjects.urlAdmin);
-	 * 
-	 * CommonMethods.TestfindElement(pageObjects.courseManagementXpath, "",
-	 * "click"); CommonMethods.TestfindElement(pageObjects.assessmentQueXpath, "",
-	 * "click"); CommonMethods.TestfindElement(pageObjects.addNewQueXpath, "",
-	 * "click");
-	 * 
-	 * // navigate que management
-	 * driver.findElement(By.xpath(PageObjects.courseManagementXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.assessmentQueXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.addNewQueXpath)).click();
-	 * 
-	 * // typing question
-	 * driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).clear();
-	 * driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).sendKeys(
-	 * PageObjects.typeQuestion);
-	 * 
-	 * // typing meta data
-	 * driver.findElement(By.xpath(PageObjects.metaDataXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.metaDataXpath)).clear();
-	 * driver.findElement(By.xpath(PageObjects.metaDataXpath)).
-	 * sendKeys("test metadata");
-	 * 
-	 * // select que level Select queLevel = new
-	 * Select(driver.findElement(By.id(PageObjects.questionLevelId)));
-	 * queLevel.selectByVisibleText(PageObjects.questionLevelValue);
-	 * 
-	 * // select marks Select marksForQue = new
-	 * Select(driver.findElement(By.id(PageObjects.marksPerQuestionId)));
-	 * marksForQue.selectByVisibleText(PageObjects.marksPerQuestionIdValue);
-	 * 
-	 * // make quest Active if
-	 * (driver.findElement(By.id(PageObjects.activeQuestionId)).isSelected()) { //
-	 * how to toggle System.out.println("selected"); } else {
-	 * System.out.println("De-selected"); } // select OptionsCount
-	 * 
-	 * Select optionsCount = new
-	 * Select(driver.findElement(By.id(PageObjects.optionsCountId)));
-	 * marksForQue.selectByVisibleText(PageObjects.optionsCountValue);
-	 * 
-	 * // need for loop for options and ans selection // typing options
-	 * driver.findElement(By.xpath(PageObjects.optionAXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.optionAXpath)).clear();
-	 * driver.findElement(By.xpath(PageObjects.optionAXpath)).sendKeys("option a");
-	 * 
-	 * driver.findElement(By.xpath(PageObjects.optionBXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.optionBXpath)).clear();
-	 * driver.findElement(By.xpath(PageObjects.optionBXpath)).sendKeys("option b");
-	 * 
-	 * // select option as answer
-	 * driver.findElement(By.xpath(PageObjects.correctAnswerXpath)).click();
-	 * 
-	 * // add question
-	 * driver.findElement(By.xpath(PageObjects.addQuestionXpath)).click();
-	 * 
-	 * // save driver.findElement(By.xpath(PageObjects.saveQuestionXpath)).click();
-	 * }
-	 */
+	@Test(enabled = true, priority = 2, dependsOnMethods = { "login" }, description = "add question manually")
+	public void createQuestionManually() throws IOException, Exception {
+
+		System.out.println("inside createQuestionManually");
+		PageObjects.methodNameToGetSheetName = new Object() {
+		}.getClass().getEnclosingMethod().getName();
+		logger = PageObjects.extent.createTest(PageObjects.methodNameToGetSheetName);
+		System.out.println(PageObjects.methodNameToGetSheetName);
+		Thread.sleep(5000);
+		System.out.println(PageObjects.driver.getCurrentUrl());
+		if (PageObjects.driver.getCurrentUrl().contains("admin")) {
+			CommonMethods.TestfindElement(logger, pageObjects.getAdministration(), "", "click");
+			requiredTab = administration.getTab(logger, "Course Management");
+			System.out.println("hey i found it- "+requiredTab.getText().toString());
+			CommonMethods.TestfindElement(logger, requiredTab, "", "click");
+			System.out.println("clicked on "+requiredTab.getText().toString());
+			CommonMethods.TestfindElement(logger, administration.getCourseManagement(), "", "click");
+			
+		}
+
+		/*
+		 * if(!PageObjects.driver.getCurrentUrl().contains("admin")) {
+		 * System.out.println("inside if of createQue manually");
+		 * System.out.println(PageObjects.driver.getCurrentUrl());
+		 * CommonMethods.TestfindElement(logger, pageObjects.getAdministration(), "",
+		 * "click"); } CommonMethods.TestfindElement(logger,
+		 * administration.getCourseManagement(), "", "click");
+		 * System.out.println("inside createQuestionManually 222"); /* /*
+		 * CommonMethods.TestfindElement(pageObjects.courseManagementXpath, "",
+		 * "click"); CommonMethods.TestfindElement(pageObjects.assessmentQueXpath, "",
+		 * "click"); CommonMethods.TestfindElement(pageObjects.addNewQueXpath, "",
+		 * "click");
+		 * 
+		 * // navigate que management
+		 * driver.findElement(By.xpath(PageObjects.courseManagementXpath)).click();
+		 * driver.findElement(By.xpath(PageObjects.assessmentQueXpath)).click();
+		 * driver.findElement(By.xpath(PageObjects.addNewQueXpath)).click();
+		 * 
+		 * // typing question
+		 * driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).click();
+		 * driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).clear();
+		 * driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).sendKeys(
+		 * PageObjects.typeQuestion);
+		 * 
+		 * // typing meta data
+		 * driver.findElement(By.xpath(PageObjects.metaDataXpath)).click();
+		 * driver.findElement(By.xpath(PageObjects.metaDataXpath)).clear();
+		 * driver.findElement(By.xpath(PageObjects.metaDataXpath)).
+		 * sendKeys("test metadata");
+		 * 
+		 * // select que level Select queLevel = new
+		 * Select(driver.findElement(By.id(PageObjects.questionLevelId)));
+		 * queLevel.selectByVisibleText(PageObjects.questionLevelValue);
+		 * 
+		 * // select marks Select marksForQue = new
+		 * Select(driver.findElement(By.id(PageObjects.marksPerQuestionId)));
+		 * marksForQue.selectByVisibleText(PageObjects.marksPerQuestionIdValue);
+		 * 
+		 * // make quest Active if
+		 * (driver.findElement(By.id(PageObjects.activeQuestionId)).isSelected()) { //
+		 * how to toggle System.out.println("selected"); } else {
+		 * System.out.println("De-selected"); } // select OptionsCount
+		 * 
+		 * Select optionsCount = new
+		 * Select(driver.findElement(By.id(PageObjects.optionsCountId)));
+		 * marksForQue.selectByVisibleText(PageObjects.optionsCountValue);
+		 * 
+		 * // need for loop for options and ans selection // typing options
+		 * driver.findElement(By.xpath(PageObjects.optionAXpath)).click();
+		 * driver.findElement(By.xpath(PageObjects.optionAXpath)).clear();
+		 * driver.findElement(By.xpath(PageObjects.optionAXpath)).sendKeys("option a");
+		 * 
+		 * driver.findElement(By.xpath(PageObjects.optionBXpath)).click();
+		 * driver.findElement(By.xpath(PageObjects.optionBXpath)).clear();
+		 * driver.findElement(By.xpath(PageObjects.optionBXpath)).sendKeys("option b");
+		 * 
+		 * // select option as answer
+		 * driver.findElement(By.xpath(PageObjects.correctAnswerXpath)).click();
+		 * 
+		 * // add question
+		 * driver.findElement(By.xpath(PageObjects.addQuestionXpath)).click();
+		 */
+		// save driver.findElement(By.xpath(PageObjects.saveQuestionXpath)).click();
+	}
 
 	/*
 	 * @Test(enabled = true, priority=3, dependsOnMethods = { "login",
@@ -249,7 +284,7 @@ System.out.println("we are in : "+PageObjects.methodNameToGetSheetName);
 	 * PageObjects.retryLimit = 0; }
 	 */
 	@AfterSuite(enabled = true)
-	public void closeBrowser() throws ParseException {
+	public void closeBrowser() throws ParseException, InterruptedException {
 		// PageObjects.driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL,"t");
 		System.out.println("in after suit---------");
 		if (PageObjects.prop.getProperty("EnableMailShoot").equalsIgnoreCase("true")) {
@@ -268,23 +303,24 @@ System.out.println("we are in : "+PageObjects.methodNameToGetSheetName);
 			SendMail.sendMail(from, MailIdPassword, to, cc);
 		}
 		if (PageObjects.prop.getProperty("OnlyCheckAPI").equalsIgnoreCase("true")) {
-		browserName = PageObjects.prop.getProperty("BrowserName");
-		switch (browserName) {
-		case "chrome":
-			WebDriverManager.chromedriver().setup();
-			PageObjects.driver = new ChromeDriver();
-			break;
-		case "firefox":
-			WebDriverManager.firefoxdriver().setup();
-			PageObjects.driver = new FirefoxDriver();
-			break;
-		case "ie":
-			WebDriverManager.iedriver().setup();
-			PageObjects.driver = new InternetExplorerDriver();
-			break;
-		
-	}
+			browserName = PageObjects.prop.getProperty("BrowserName");
+			switch (browserName) {
+			case "chrome":
+				WebDriverManager.chromedriver().setup();
+				PageObjects.driver = new ChromeDriver();
+				break;
+			case "firefox":
+				WebDriverManager.firefoxdriver().setup();
+				PageObjects.driver = new FirefoxDriver();
+				break;
+			case "ie":
+				WebDriverManager.iedriver().setup();
+				PageObjects.driver = new InternetExplorerDriver();
+				break;
+
+			}
 		}
+		Thread.sleep(5000);
 		PageObjects.driver.get(PageObjects.htmlReportPath);
 	}
 
