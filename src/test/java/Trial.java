@@ -9,5 +9,9 @@ import pageObjects.PageObjects;
 
 public class Trial {
 	
-	
+	public static void main(String[] args) {
+		String str = "journaldev.com";
+
+		char[] charArray = str.toCharArray();	
+	}
 }

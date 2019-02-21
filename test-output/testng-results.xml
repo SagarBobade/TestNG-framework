@@ -1,73 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results total="2" passed="1" failed="1" skipped="0">
+<testng-results total="2" passed="2" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2019-02-18T13:39:30Z" name="Suite" finished-at="2019-02-18T13:40:09Z" duration-ms="38662">
+  <suite started-at="2019-02-21T14:04:13Z" name="Suite" finished-at="2019-02-21T14:04:37Z" duration-ms="24123">
     <groups>
     </groups>
-    <test started-at="2019-02-18T13:39:30Z" name="Test" finished-at="2019-02-18T13:40:09Z" duration-ms="38662">
+    <test started-at="2019-02-21T14:04:13Z" name="Test" finished-at="2019-02-21T14:04:37Z" duration-ms="24123">
       <class name="plain.QuestionAdd">
-        <test-method is-config="true" signature="openBrowser()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-18T19:09:23Z" name="openBrowser" finished-at="2019-02-18T19:09:30Z" duration-ms="7063" status="PASS">
+        <test-method is-config="true" signature="openBrowser()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-21T19:34:04Z" name="openBrowser" finished-at="2019-02-21T19:34:13Z" duration-ms="8211" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- openBrowser -->
-        <test-method is-config="true" signature="beforeTest()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-18T19:09:30Z" name="beforeTest" finished-at="2019-02-18T19:09:30Z" duration-ms="187" status="PASS">
+        <test-method is-config="true" signature="beforeTest()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-21T19:34:13Z" name="beforeTest" finished-at="2019-02-21T19:34:13Z" duration-ms="211" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- beforeTest -->
-        <test-method is-config="true" signature="beforeClass()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-18T19:09:30Z" name="beforeClass" finished-at="2019-02-18T19:09:30Z" duration-ms="70" status="PASS">
+        <test-method is-config="true" signature="beforeClass()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-21T19:34:13Z" name="beforeClass" finished-at="2019-02-21T19:34:13Z" duration-ms="98" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- beforeClass -->
-        <test-method signature="login()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-18T19:09:30Z" name="login" description="login to the application" finished-at="2019-02-18T19:09:42Z" duration-ms="11379" status="PASS">
+        <test-method signature="login()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-21T19:34:13Z" name="login" description="login to the application" finished-at="2019-02-21T19:34:24Z" duration-ms="10819" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- login -->
-        <test-method signature="createQuestionManually()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-18T19:09:42Z" name="createQuestionManually" description="add question manually" finished-at="2019-02-18T19:10:08Z" depends-on-methods="plain.QuestionAdd.login" duration-ms="26347" status="FAIL">
-          <exception class="java.lang.ClassCastException">
-            <message>
-              <![CDATA[class com.aventstack.extentreports.ExtentTest cannot be cast to class com.aventstack.extentreports.markuputils.Markup (com.aventstack.extentreports.ExtentTest and com.aventstack.extentreports.markuputils.Markup are in unnamed module of loader 'app')]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[java.lang.ClassCastException: class com.aventstack.extentreports.ExtentTest cannot be cast to class com.aventstack.extentreports.markuputils.Markup (com.aventstack.extentreports.ExtentTest and com.aventstack.extentreports.markuputils.Markup are in unnamed module of loader 'app')
-	at common.CommonMethods.insideCatch(CommonMethods.java:210)
-	at common.CommonMethods.TestfindElement(CommonMethods.java:154)
-	at plain.QuestionAdd.createQuestionManually(QuestionAdd.java:170)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
-	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:80)
-	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
-	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
-	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
-	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
-	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
-	at org.testng.TestRunner.privateRun(TestRunner.java:767)
-	at org.testng.TestRunner.run(TestRunner.java:617)
-	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
-	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
-	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
-	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
-	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
-	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1198)
-	at org.testng.TestNG.runSuitesLocally(TestNG.java:1123)
-	at org.testng.TestNG.run(TestNG.java:1031)
-	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
-	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
-	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
-]]>
-            </full-stacktrace>
-          </exception> <!-- java.lang.ClassCastException -->
+        <test-method signature="createQuestionManually()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-21T19:34:24Z" name="createQuestionManually" description="add question manually" finished-at="2019-02-21T19:34:36Z" depends-on-methods="plain.QuestionAdd.login" duration-ms="12215" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- createQuestionManually -->
-        <test-method is-config="true" signature="afterTest()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-18T19:10:08Z" name="afterTest" finished-at="2019-02-18T19:10:09Z" duration-ms="638" status="PASS">
+        <test-method is-config="true" signature="afterTest()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-21T19:34:36Z" name="afterTest" finished-at="2019-02-21T19:34:37Z" duration-ms="741" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- afterTest -->
-        <test-method is-config="true" signature="closeBrowser()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-18T19:10:09Z" name="closeBrowser" finished-at="2019-02-18T19:10:23Z" duration-ms="13599" status="PASS">
+        <test-method is-config="true" signature="closeBrowser()[pri:0, instance:plain.QuestionAdd@6aaceffd]" started-at="2019-02-21T19:34:37Z" name="closeBrowser" finished-at="2019-02-21T19:34:37Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- closeBrowser -->

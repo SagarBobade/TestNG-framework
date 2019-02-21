@@ -25,10 +25,17 @@ public class Administration {
 	@FindAll({ @FindBy(xpath = "//*[@id=\"pills-home-tab +i+\"]") })
 	private List<WebElement> administrationNavbar;
 	
-	
-	@FindAll({ @FindBy(xpath = "//*[@id='cDm']") })
+	@FindAll({ @FindBy(xpath = "//*[@id='cm']") })
 	private WebElement courseManagement;
 
+
+	@FindAll({ @FindBy(xpath = "//*[@id='aq']") })
+	private WebElement assessmentQuestion;
+	
+	public WebElement getAssessmentQuestion() {
+		return assessmentQuestion;
+	}	
+	
 	public WebElement getCourseManagement() {
 		return courseManagement;
 	}

@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -16,12 +17,14 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -43,6 +46,7 @@ public class CommonMethods implements IRetryAnalyzer {
 
 	public static Properties prop;
 	public static InputStream input;
+	public static Select dropdown;
 
 	public boolean retry(ITestResult result) {
 
@@ -88,24 +92,22 @@ public class CommonMethods implements IRetryAnalyzer {
 		System.out.println("in wait after hiii");
 		WebDriverWait wait = new WebDriverWait(PageObjects.driver, 20);
 		System.out.println("in wait");
-		
+
 		wait.until(ExpectedConditions.visibilityOfAllElements(list));
-		
+
 		System.out.println("in wait before return");
 		return list;
 	}
-	
+
 	public static WebElement wait(WebElement webElement) throws InterruptedException {
 
-		System.out.println("in wait after hiii");
 		WebDriverWait wait = new WebDriverWait(PageObjects.driver, 20);
-		System.out.println("in wait");
-		wait.until(ExpectedConditions.elementToBeClickable(webElement));
+		wait.until(ExpectedConditions.visibilityOfAllElements(webElement));
 		
-		System.out.println("in wait before return");
+		System.out.println("blablabla");
 		return webElement;
 	}
-	
+
 	public static void TestfindElement(ExtentTest logger, WebElement data, String values, String action)
 			throws Exception {
 		WebElement foundElement;
@@ -126,13 +128,49 @@ public class CommonMethods implements IRetryAnalyzer {
 					foundElement.sendKeys(values);
 					logger.info("Typed - " + values);
 					break;
+				case "enter":
+					foundElement.sendKeys(Keys.ENTER);
+					;
+					logger.info("Pressed Enter");
+					break;
 				case "click":
 					foundElement.click();
 					logger.info("Clicked");
 					break;
 				case "tick":
-					foundElement.click();
+					if (values.equalsIgnoreCase("true")) {
+						System.out.println("true in excel");
+						if (!foundElement.isSelected()) {
+							foundElement.click();
+						}
+					}
+					else if (values.equalsIgnoreCase("false")) {
+						System.out.println("false in excel");
+						//	if (foundElement.isSelected()) {
+								foundElement.click();
+						//	}
+						}
+					
+					System.out.println("in tick : " + values);
+
 					logger.info("Ticked checkbox");
+					break;
+				case "select":
+					if (values.contains(".0")) {
+						int temp = (int) Double.parseDouble(values);
+						values = Integer.toString(temp);
+						// int intPart = Integer.parseInt(values.split(".").length);
+					}
+					dropdown = new Select(foundElement);
+
+					dropdown.selectByValue(values);
+					logger.info("Selected " + values);
+					break;
+				case "webtable":
+					
+					
+					foundElement.click();
+					logger.info("Selected radio button");
 					break;
 				case "selectRadio":
 					foundElement.click();
@@ -227,4 +265,31 @@ public class CommonMethods implements IRetryAnalyzer {
 			}
 		}
 	}
+
+	public static void TestfindElement2(ExtentTest logger, String xpath1, String xpath2, String totalCount) throws IOException {
+
+		
+		  int tot = Integer.parseInt(totalCount);
+		  System.out.println(tot+ " options will be there");
+	
+		  for(int i=1; i<=tot; i++) {
+		  
+		  PageObjects.driver.findElement(By.xpath(xpath1+i+xpath2)).click();
+		  PageObjects.driver.findElement(By.xpath(xpath1+i+xpath2)).clear();
+		  PageObjects.driver.findElement(By.xpath(xpath1+i+xpath2)).sendKeys(CommonMethods.getValue("Option"+i));
+		  
+		  }
+		 
+	}
+
+	public static void TestfindElement2(ExtentTest logger, String correctOption1, String correctOption2, String correctOptionfromExcel,
+			String value) {
+		
+		String correctOptionToTick = correctOptionfromExcel.substring(correctOptionfromExcel.length() - 1); 
+		
+		
+		  PageObjects.driver.findElement(By.xpath(correctOption1+correctOptionToTick+correctOption2)).click();
+		
+	}
+		
 }

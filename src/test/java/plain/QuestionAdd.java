@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -34,6 +35,8 @@ import common.SendMail;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import pageObjects.PageObjects;
 import pageObjects.dashboard.administration.Administration;
+import pageObjects.dashboard.administration.assessmentQue.AssessmentQuestion;
+import pageObjects.dashboard.administration.courseCatalogue.CourseCatalogue;
 import pageObjects.loginPage.LoginPage;
 
 public class QuestionAdd {
@@ -41,6 +44,8 @@ public class QuestionAdd {
 	public LoginPage loginPage;
 	public PageObjects pageObjects;
 	public Administration administration;
+	public AssessmentQuestion assessmentQuestion;
+	
 
 	public static boolean isFind = true;
 	public static XSSFWorkbook workbook;
@@ -57,7 +62,7 @@ public class QuestionAdd {
 		loginPage = PageFactory.initElements(PageObjects.driver, LoginPage.class);
 		administration = PageFactory.initElements(PageObjects.driver, Administration.class);
 		pageObjects = PageFactory.initElements(PageObjects.driver, PageObjects.class);
-
+		assessmentQuestion = PageFactory.initElements(PageObjects.driver, AssessmentQuestion.class);
 	}
 
 	@BeforeSuite
@@ -162,13 +167,41 @@ public class QuestionAdd {
 		Thread.sleep(5000);
 		System.out.println(PageObjects.driver.getCurrentUrl());
 		if (PageObjects.driver.getCurrentUrl().contains("admin")) {
-			CommonMethods.TestfindElement(logger, pageObjects.getAdministration(), "", "click");
+			CommonMethods.TestfindElement(logger, PageObjects.getAdministration(), "", "click");
 			requiredTab = administration.getTab(logger, "Course Management");
 			System.out.println("hey i found it- "+requiredTab.getText().toString());
 			CommonMethods.TestfindElement(logger, requiredTab, "", "click");
 			System.out.println("clicked on "+requiredTab.getText().toString());
-			CommonMethods.TestfindElement(logger, administration.getCourseManagement(), "", "click");
+			CommonMethods.TestfindElement(logger, administration.getAssessmentQuestion(), "", "click");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getAddNew(), "", "click");
 			
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestion(), CommonMethods.getValue("Question"),
+									"type");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getMetaData(), CommonMethods.getValue("MetaData"),
+									"type");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestionLevel(), CommonMethods.getValue("QuestionLevel"),
+					"select");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getMarksPerQuestion(), CommonMethods.getValue("MarksPerQuestion"),
+					"select");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getIsActiveQuestion(), CommonMethods.getValue("IsActiveQuestion"),
+					"tick");
+			System.out.println("now see");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getIsMemoQuestion(), CommonMethods.getValue("IsMemoQuestion"),
+					"tick");
+			
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getOptionsCount(), CommonMethods.getValue("OptionsCount"),
+									"select");				
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestionType(), CommonMethods.getValue("QuestionType"),
+									"select");
+			
+			
+			
+		CommonMethods.TestfindElement2(logger,assessmentQuestion.optionWebTable1, assessmentQuestion.optionsWebTable2, CommonMethods.getValue("OptionsCount"));
+		CommonMethods.TestfindElement2(logger, assessmentQuestion.correctOption1,assessmentQuestion.correctOption2, CommonMethods.getValue("correctOption"),
+				"click");
+		
+		CommonMethods.TestfindElement(logger, assessmentQuestion.getSaveQuestion(), "", "click");
+	
 		}
 
 		/*
@@ -320,8 +353,8 @@ public class QuestionAdd {
 
 			}
 		}
-		Thread.sleep(5000);
-		PageObjects.driver.get(PageObjects.htmlReportPath);
+	//	Thread.sleep(10000);
+	//	PageObjects.driver.get(PageObjects.htmlReportPath);
 	}
 
 }
