@@ -45,7 +45,6 @@ public class QuestionAdd {
 	public PageObjects pageObjects;
 	public Administration administration;
 	public AssessmentQuestion assessmentQuestion;
-	
 
 	public static boolean isFind = true;
 	public static XSSFWorkbook workbook;
@@ -58,7 +57,6 @@ public class QuestionAdd {
 
 	@BeforeClass
 	public void beforeClass() {
-		System.out.println("**************");
 		loginPage = PageFactory.initElements(PageObjects.driver, LoginPage.class);
 		administration = PageFactory.initElements(PageObjects.driver, Administration.class);
 		pageObjects = PageFactory.initElements(PageObjects.driver, PageObjects.class);
@@ -138,8 +136,9 @@ public class QuestionAdd {
 				CommonMethods.TestfindElement(logger, loginPage.getLoginButton(), "", "click");
 
 				Thread.sleep(5000);
-				// Assert.assertEquals(PageObjects.driver.getCurrentUrl(),
-				// PageObjects.loginUrl);
+				if (!PageObjects.driver.getCurrentUrl().contains("admin")) {
+					throw new Exception();
+				}
 				logger.log(Status.PASS, "login successfully");
 			} else {
 
@@ -149,7 +148,7 @@ public class QuestionAdd {
 								CommonMethods.getValue("EncodedPassword")),
 						CommonMethods.getValue("Expected response code"));
 
-				logger.log(Status.PASS, PageObjects.methodNameToGetSheetName + " successfuldf");
+				logger.log(Status.PASS, PageObjects.methodNameToGetSheetName + " successfully");
 			}
 		} catch (Exception e) {
 			CommonMethods.insideCatchOne(logger);
@@ -159,114 +158,54 @@ public class QuestionAdd {
 	@Test(enabled = true, priority = 2, dependsOnMethods = { "login" }, description = "add question manually")
 	public void createQuestionManually() throws IOException, Exception {
 
-		System.out.println("inside createQuestionManually");
 		PageObjects.methodNameToGetSheetName = new Object() {
 		}.getClass().getEnclosingMethod().getName();
 		logger = PageObjects.extent.createTest(PageObjects.methodNameToGetSheetName);
-		System.out.println(PageObjects.methodNameToGetSheetName);
 		Thread.sleep(5000);
-		System.out.println(PageObjects.driver.getCurrentUrl());
 		if (PageObjects.driver.getCurrentUrl().contains("admin")) {
 			CommonMethods.TestfindElement(logger, PageObjects.getAdministration(), "", "click");
 			requiredTab = administration.getTab(logger, "Course Management");
-			System.out.println("hey i found it- "+requiredTab.getText().toString());
 			CommonMethods.TestfindElement(logger, requiredTab, "", "click");
-			System.out.println("clicked on "+requiredTab.getText().toString());
 			CommonMethods.TestfindElement(logger, administration.getAssessmentQuestion(), "", "click");
 			CommonMethods.TestfindElement(logger, assessmentQuestion.getAddNew(), "", "click");
-			
 			CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestion(), CommonMethods.getValue("Question"),
-									"type");
+					"type");
 			CommonMethods.TestfindElement(logger, assessmentQuestion.getMetaData(), CommonMethods.getValue("MetaData"),
-									"type");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestionLevel(), CommonMethods.getValue("QuestionLevel"),
-					"select");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getMarksPerQuestion(), CommonMethods.getValue("MarksPerQuestion"),
-					"select");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getIsActiveQuestion(), CommonMethods.getValue("IsActiveQuestion"),
-					"tick");
-			System.out.println("now see");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getIsMemoQuestion(), CommonMethods.getValue("IsMemoQuestion"),
-					"tick");
+					"type");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestionLevel(),
+					CommonMethods.getValue("QuestionLevel"), "select");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getMarksPerQuestion(),
+					CommonMethods.getValue("MarksPerQuestion"), "select");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getIsActiveQuestion(),
+					CommonMethods.getValue("IsActiveQuestion"), "tick");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getIsMemoQuestion(),
+					CommonMethods.getValue("IsMemoQuestion"), "tick");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getOptionsCount(),
+					CommonMethods.getValue("OptionsCount"), "select");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestionType(),
+					CommonMethods.getValue("QuestionType"), "select");
+			CommonMethods.webTableOp(logger, assessmentQuestion.optionWebTable1,
+					assessmentQuestion.optionsWebTable2, CommonMethods.getValue("OptionsCount"), "type");
+			CommonMethods.webTableOp(logger, assessmentQuestion.correctOption1, assessmentQuestion.correctOption2,
+					CommonMethods.getValue("correctOption"), "tick");
+			CommonMethods.TestfindElement(logger, assessmentQuestion.getSaveQuestion(), "", "click");
 			
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getOptionsCount(), CommonMethods.getValue("OptionsCount"),
-									"select");				
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestionType(), CommonMethods.getValue("QuestionType"),
-									"select");
+			/*if(CommonMethods.webTableOp(logger, assessmentQuestion.savedQuestionText1, assessmentQuestion.savedQuestionText2,
+					CommonMethods.getValue("Question"), "getText").equalsIgnoreCase(CommonMethods.getValue("Question"))){
+				System.out.println("yes it is saved successfully");
+			}
+*/
+			Thread.sleep(5000);
+			String textFromGrid = CommonMethods.webTableOp(logger, assessmentQuestion.savedQuestionText1, assessmentQuestion.savedQuestionText2,
+					CommonMethods.getValue("Question"), "getText");
 			
-			
-			
-		CommonMethods.TestfindElement2(logger,assessmentQuestion.optionWebTable1, assessmentQuestion.optionsWebTable2, CommonMethods.getValue("OptionsCount"));
-		CommonMethods.TestfindElement2(logger, assessmentQuestion.correctOption1,assessmentQuestion.correctOption2, CommonMethods.getValue("correctOption"),
-				"click");
-		
-		CommonMethods.TestfindElement(logger, assessmentQuestion.getSaveQuestion(), "", "click");
-	
-		}
+			System.out.println(textFromGrid);
 
-		/*
-		 * if(!PageObjects.driver.getCurrentUrl().contains("admin")) {
-		 * System.out.println("inside if of createQue manually");
-		 * System.out.println(PageObjects.driver.getCurrentUrl());
-		 * CommonMethods.TestfindElement(logger, pageObjects.getAdministration(), "",
-		 * "click"); } CommonMethods.TestfindElement(logger,
-		 * administration.getCourseManagement(), "", "click");
-		 * System.out.println("inside createQuestionManually 222"); /* /*
-		 * CommonMethods.TestfindElement(pageObjects.courseManagementXpath, "",
-		 * "click"); CommonMethods.TestfindElement(pageObjects.assessmentQueXpath, "",
-		 * "click"); CommonMethods.TestfindElement(pageObjects.addNewQueXpath, "",
-		 * "click");
-		 * 
-		 * // navigate que management
-		 * driver.findElement(By.xpath(PageObjects.courseManagementXpath)).click();
-		 * driver.findElement(By.xpath(PageObjects.assessmentQueXpath)).click();
-		 * driver.findElement(By.xpath(PageObjects.addNewQueXpath)).click();
-		 * 
-		 * // typing question
-		 * driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).click();
-		 * driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).clear();
-		 * driver.findElement(By.xpath(PageObjects.questionTextboxXpath)).sendKeys(
-		 * PageObjects.typeQuestion);
-		 * 
-		 * // typing meta data
-		 * driver.findElement(By.xpath(PageObjects.metaDataXpath)).click();
-		 * driver.findElement(By.xpath(PageObjects.metaDataXpath)).clear();
-		 * driver.findElement(By.xpath(PageObjects.metaDataXpath)).
-		 * sendKeys("test metadata");
-		 * 
-		 * // select que level Select queLevel = new
-		 * Select(driver.findElement(By.id(PageObjects.questionLevelId)));
-		 * queLevel.selectByVisibleText(PageObjects.questionLevelValue);
-		 * 
-		 * // select marks Select marksForQue = new
-		 * Select(driver.findElement(By.id(PageObjects.marksPerQuestionId)));
-		 * marksForQue.selectByVisibleText(PageObjects.marksPerQuestionIdValue);
-		 * 
-		 * // make quest Active if
-		 * (driver.findElement(By.id(PageObjects.activeQuestionId)).isSelected()) { //
-		 * how to toggle System.out.println("selected"); } else {
-		 * System.out.println("De-selected"); } // select OptionsCount
-		 * 
-		 * Select optionsCount = new
-		 * Select(driver.findElement(By.id(PageObjects.optionsCountId)));
-		 * marksForQue.selectByVisibleText(PageObjects.optionsCountValue);
-		 * 
-		 * // need for loop for options and ans selection // typing options
-		 * driver.findElement(By.xpath(PageObjects.optionAXpath)).click();
-		 * driver.findElement(By.xpath(PageObjects.optionAXpath)).clear();
-		 * driver.findElement(By.xpath(PageObjects.optionAXpath)).sendKeys("option a");
-		 * 
-		 * driver.findElement(By.xpath(PageObjects.optionBXpath)).click();
-		 * driver.findElement(By.xpath(PageObjects.optionBXpath)).clear();
-		 * driver.findElement(By.xpath(PageObjects.optionBXpath)).sendKeys("option b");
-		 * 
-		 * // select option as answer
-		 * driver.findElement(By.xpath(PageObjects.correctAnswerXpath)).click();
-		 * 
-		 * // add question
-		 * driver.findElement(By.xpath(PageObjects.addQuestionXpath)).click();
-		 */
-		// save driver.findElement(By.xpath(PageObjects.saveQuestionXpath)).click();
+			if(textFromGrid.equalsIgnoreCase(CommonMethods.getValue("Question"))) {
+				System.out.println("saved que successfully");
+			}
+
+		}
 	}
 
 	/*
@@ -353,8 +292,8 @@ public class QuestionAdd {
 
 			}
 		}
-	//	Thread.sleep(10000);
-	//	PageObjects.driver.get(PageObjects.htmlReportPath);
+		// Thread.sleep(10000);
+		// PageObjects.driver.get(PageObjects.htmlReportPath);
 	}
 
 }

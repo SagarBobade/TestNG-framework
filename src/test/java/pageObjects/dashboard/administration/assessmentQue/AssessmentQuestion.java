@@ -53,7 +53,16 @@ public class AssessmentQuestion {
 	@FindAll({ @FindBy(xpath = "//button[@class='btn btn-success ng-star-inserted']") })
 	private WebElement saveQuestion;
 	
+	//public String savedQuestionText1 = "//span[text()='";
 	
+	//public String savedQuestionText2 = "']";
+
+//	public String savedQuestionText1 = "//span[@title='";
+//	public String savedQuestionText2 = "']";
+
+	public String savedQuestionText1 = "//datatable-body-cell[1]//div[1]//span[@title='";
+	public String savedQuestionText2 = "']";
+
 	public String getQuestion2() {
 		return question2;
 	}

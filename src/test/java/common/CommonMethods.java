@@ -103,12 +103,11 @@ public class CommonMethods implements IRetryAnalyzer {
 
 		WebDriverWait wait = new WebDriverWait(PageObjects.driver, 20);
 		wait.until(ExpectedConditions.visibilityOfAllElements(webElement));
-		
-		System.out.println("blablabla");
+
 		return webElement;
 	}
 
-	public static void TestfindElement(ExtentTest logger, WebElement data, String values, String action)
+	public static String TestfindElement(ExtentTest logger, WebElement data, String values, String action)
 			throws Exception {
 		WebElement foundElement;
 		JavascriptExecutor js = (JavascriptExecutor) PageObjects.driver;
@@ -139,27 +138,18 @@ public class CommonMethods implements IRetryAnalyzer {
 					break;
 				case "tick":
 					if (values.equalsIgnoreCase("true")) {
-						System.out.println("true in excel");
 						if (!foundElement.isSelected()) {
 							foundElement.click();
 						}
+					} else if (values.equalsIgnoreCase("false")) {
+						foundElement.click();
 					}
-					else if (values.equalsIgnoreCase("false")) {
-						System.out.println("false in excel");
-						//	if (foundElement.isSelected()) {
-								foundElement.click();
-						//	}
-						}
-					
-					System.out.println("in tick : " + values);
-
 					logger.info("Ticked checkbox");
 					break;
 				case "select":
 					if (values.contains(".0")) {
 						int temp = (int) Double.parseDouble(values);
 						values = Integer.toString(temp);
-						// int intPart = Integer.parseInt(values.split(".").length);
 					}
 					dropdown = new Select(foundElement);
 
@@ -167,12 +157,14 @@ public class CommonMethods implements IRetryAnalyzer {
 					logger.info("Selected " + values);
 					break;
 				case "webtable":
-					
-					
 					foundElement.click();
 					logger.info("Selected radio button");
 					break;
 				case "selectRadio":
+					foundElement.click();
+					logger.info("Selected radio button");
+					break;
+				case "getText":
 					foundElement.click();
 					logger.info("Selected radio button");
 					break;
@@ -191,7 +183,7 @@ public class CommonMethods implements IRetryAnalyzer {
 		} catch (Exception e) {
 			CommonMethods.insideCatch(logger, js);
 		}
-		return;
+		return "null";
 	}
 
 	public static Properties readPropertiesFile() {
@@ -266,30 +258,36 @@ public class CommonMethods implements IRetryAnalyzer {
 		}
 	}
 
-	public static void TestfindElement2(ExtentTest logger, String xpath1, String xpath2, String totalCount) throws IOException {
+	public static String webTableOp(ExtentTest logger, String xpath1, String xpath2, String value, String OP)
+			throws IOException {
 
 		
-		  int tot = Integer.parseInt(totalCount);
-		  System.out.println(tot+ " options will be there");
-	
-		  for(int i=1; i<=tot; i++) {
-		  
-		  PageObjects.driver.findElement(By.xpath(xpath1+i+xpath2)).click();
-		  PageObjects.driver.findElement(By.xpath(xpath1+i+xpath2)).clear();
-		  PageObjects.driver.findElement(By.xpath(xpath1+i+xpath2)).sendKeys(CommonMethods.getValue("Option"+i));
-		  
-		  }
-		 
-	}
+		switch (OP) {
 
-	public static void TestfindElement2(ExtentTest logger, String correctOption1, String correctOption2, String correctOptionfromExcel,
-			String value) {
-		
-		String correctOptionToTick = correctOptionfromExcel.substring(correctOptionfromExcel.length() - 1); 
-		
-		
-		  PageObjects.driver.findElement(By.xpath(correctOption1+correctOptionToTick+correctOption2)).click();
-		
+		case "type":
+			// This can be used to type in particular textbox in grid of textboxes
+			int tot = Integer.parseInt(value);
+			for (int i = 1; i <= tot; i++) {
+
+				PageObjects.driver.findElement(By.xpath(xpath1 + i + xpath2)).click();
+				PageObjects.driver.findElement(By.xpath(xpath1 + i + xpath2)).clear();
+				PageObjects.driver.findElement(By.xpath(xpath1 + i + xpath2))
+						.sendKeys(CommonMethods.getValue("Option" + i));
+			}
+			break;
+		case "tick":
+			// This can be used to Tick the particular TOGGLE BUTTON in grid of toggle buttons
+			String webElementToTick = value.substring(value.length() - 1);
+			PageObjects.driver.findElement(By.xpath(xpath1 + webElementToTick + xpath2)).click();
+			break;
+		case "getText":
+		//	String webElementToTick2 = null;
+			// This can be used to Tick the particular TEXT in grid
+				//String webElementToTick = value.substring(value.length() - 1);
+			System.out.println("in gettext case");
+			return PageObjects.driver.findElement(By.xpath(xpath1 +value+ xpath2)).getText().toString();
+			}
+		return "";
+
 	}
-		
 }
