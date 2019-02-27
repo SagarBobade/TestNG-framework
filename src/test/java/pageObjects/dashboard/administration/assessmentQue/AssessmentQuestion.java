@@ -8,60 +8,80 @@ import org.openqa.selenium.support.FindBy;
 public class AssessmentQuestion {
 
 	WebDriver driver = null;
-	final int i =0;
+	final int i = 0;
+
 	public AssessmentQuestion(WebDriver driver) {
 		System.out.println("in AssessmentQuestion constructor");
 		this.driver = driver;
 	}
 
-	
 	@FindAll({ @FindBy(xpath = "//div//button//i[@class='fa fa-plus']") })
 	private WebElement addNew;
 
 	@FindAll({ @FindBy(id = "questionTex") })
 	private WebElement question;
-	
+
 	public String question2 = "questionTex";
+
 	
 	@FindAll({ @FindBy(xpath = "//input[@placeholder='Please enter metadata']") })
 	private WebElement metaData;
-	
+
 	@FindAll({ @FindBy(id = "difficultylevel") })
 	private WebElement questionLevel;
-	
+
 	@FindAll({ @FindBy(id = "totalmarks") })
 	private WebElement marksPerQuestion;
-	
-	@FindAll({ @FindBy(xpath = "/html/body/modal-container/div/div/div[2]/app-assessment-new/form/div/div[1]/div[5]/div/label")})
+
+	@FindAll({
+			@FindBy(xpath = "/html/body/modal-container/div/div/div[2]/app-assessment-new/form/div/div[1]/div[5]/div/label") })
 	private WebElement isActiveQuestion;
-	
-	@FindAll({ @FindBy(xpath = "/html/body/modal-container/div/div/div[2]/app-assessment-new/form/div/div[1]/div[6]/div/label") })
+
+	@FindAll({
+			@FindBy(xpath = "/html/body/modal-container/div/div/div[2]/app-assessment-new/form/div/div[1]/div[6]/div/label") })
 	private WebElement isMemoQuestion;
-	
+
 	@FindAll({ @FindBy(id = "labelForOptions") })
 	private WebElement optionsCount;
-	
+
 	@FindAll({ @FindBy(id = "contentType") })
 	private WebElement QuestionType;
-	
+
 	@FindAll({ @FindBy(xpath = "div[+]/div/div/div/textarea") })
 	private WebElement optionsWebTable;
-	
+
 	public String optionWebTable1 = "/html[1]/body[1]/modal-container[1]/div[1]/div[1]/div[2]/app-assessment-new[1]/form[1]/div[1]/div[2]/div[";
 	public String optionsWebTable2 = "]/div[1]/div[1]/textarea[1]";
-	
+
 	@FindAll({ @FindBy(xpath = "//button[@class='btn btn-success ng-star-inserted']") })
 	private WebElement saveQuestion;
-	
-	//public String savedQuestionText1 = "//span[text()='";
-	
-	//public String savedQuestionText2 = "']";
-
-//	public String savedQuestionText1 = "//span[@title='";
-//	public String savedQuestionText2 = "']";
 
 	public String savedQuestionText1 = "//datatable-body-cell[1]//div[1]//span[@title='";
 	public String savedQuestionText2 = "']";
+
+	public String correctOption1 = "/html/body/modal-container/div/div/div[2]/app-assessment-new/form/div/div[2]/div[";
+	public String correctOption2 = "]/div/div[2]/label[2]";
+	
+	@FindBy(xpath = "//datatable-scroller[@class='datatable-scroll']//datatable-row-wrapper[1]//datatable-body-row[1]//div[2]//datatable-body-cell[6]//div[1]//i[1]")
+	private WebElement editQuestion;
+
+	@FindBy(xpath = "//input[contains(@placeholder,'Search  questions')]")
+	private WebElement searchQuestion;
+	
+	@FindBy(xpath = "//div[@class='form-group']//span[@class='border-left-0  input-group-btn']//i")
+	private WebElement searchIcon;
+
+	public WebElement getSearchIcon() {
+		return searchIcon;
+	}
+
+	public WebElement getSearchQuestion() {
+		return searchQuestion;
+	}
+
+	public WebElement getEditQuestion() {
+		return editQuestion;
+	}
 
 	public String getQuestion2() {
 		return question2;
@@ -87,13 +107,7 @@ public class AssessmentQuestion {
 		return optionWebTable1;
 	}
 
-//	@FindAll({ @FindBy(xpath = "/html/body/modal-container/div/div/div[2]/app-assessment-new/form/div/div[2]/div[1]/div/div[2]/label[2]") })
-//	private WebElement correctOption;
-	
-	
-	public String correctOption1= "/html/body/modal-container/div/div/div[2]/app-assessment-new/form/div/div[2]/div[";
-	public String correctOption2= "]/div/div[2]/label[2]";
-	
+
 
 	public WebDriver getDriver() {
 		return driver;
@@ -135,10 +149,6 @@ public class AssessmentQuestion {
 		return optionsWebTable;
 	}
 
-/*	public WebElement getCorrectOption() {
-		return correctOption;
-	}
-*/
 	public WebElement getQuestion() {
 		return question;
 	}

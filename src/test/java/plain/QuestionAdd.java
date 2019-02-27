@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -16,7 +15,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.support.PageFactory;
-import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -33,10 +31,10 @@ import com.paulhammant.ngwebdriver.NgWebDriver;
 import common.CommonMethods;
 import common.SendMail;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.restassured.response.Response;
 import pageObjects.PageObjects;
 import pageObjects.dashboard.administration.Administration;
 import pageObjects.dashboard.administration.assessmentQue.AssessmentQuestion;
-import pageObjects.dashboard.administration.courseCatalogue.CourseCatalogue;
 import pageObjects.loginPage.LoginPage;
 
 public class QuestionAdd {
@@ -81,7 +79,6 @@ public class QuestionAdd {
 			browserName = PageObjects.prop.getProperty("BrowserName");
 			switch (browserName) {
 			case "chrome":
-				System.out.println("in chrome");
 				WebDriverManager.chromedriver().setup();
 				PageObjects.driver = new ChromeDriver();
 				break;
@@ -125,29 +122,33 @@ public class QuestionAdd {
 		logger = PageObjects.extent.createTest(PageObjects.methodNameToGetSheetName);
 
 		try {
+
+			// initialization
+			String userId = CommonMethods.getValue("userIdValue");
+			String password = CommonMethods.getValue("EncodedPassword");
+			String org = CommonMethods.getValue("orgCodeValue");
+
+			// checking for api testing or GUI testing
 			if (checkAPI == false && checkUI == true) {
 				PageObjects.driver.get(PageObjects.loginUrl);
-				CommonMethods.TestfindElement(logger, loginPage.getUserId(), CommonMethods.getValue("userIdValue"),
-						"type");
-				CommonMethods.TestfindElement(logger, loginPage.getPassword(), CommonMethods.getValue("passwordValue"),
-						"type");
-				CommonMethods.TestfindElement(logger, loginPage.getOrgCode(), CommonMethods.getValue("orgCodeValue"),
-						"type");
+				CommonMethods.TestfindElement(logger, loginPage.getUserId(), userId, "type");
+				CommonMethods.TestfindElement(logger, loginPage.getPassword(), password, "type");
+				CommonMethods.TestfindElement(logger, loginPage.getOrgCode(), org, "type");
 				CommonMethods.TestfindElement(logger, loginPage.getLoginButton(), "", "click");
 
-				Thread.sleep(5000);
+				Thread.sleep(3000);
 				if (!PageObjects.driver.getCurrentUrl().contains("admin")) {
 					throw new Exception();
 				}
 				logger.log(Status.PASS, "login successfully");
 			} else {
+				// api call
+				api.CommonMethods.hitUserAuthAPI(CommonMethods.getValue("API request"), org, userId, password);
 
-				Assert.assertEquals(
-						api.CommonMethods.hitUserAuthAPI(CommonMethods.getValue("API request"),
-								CommonMethods.getValue("orgCodeValue"), CommonMethods.getValue("userIdValue"),
-								CommonMethods.getValue("EncodedPassword")),
-						CommonMethods.getValue("Expected response code"));
-
+				// reporting
+				logger.log(Status.INFO, userId);
+				logger.log(Status.INFO, password);
+				logger.log(Status.INFO, org);
 				logger.log(Status.PASS, PageObjects.methodNameToGetSheetName + " successfully");
 			}
 		} catch (Exception e) {
@@ -161,104 +162,131 @@ public class QuestionAdd {
 		PageObjects.methodNameToGetSheetName = new Object() {
 		}.getClass().getEnclosingMethod().getName();
 		logger = PageObjects.extent.createTest(PageObjects.methodNameToGetSheetName);
-		Thread.sleep(5000);
-		if (PageObjects.driver.getCurrentUrl().contains("admin")) {
-			CommonMethods.TestfindElement(logger, PageObjects.getAdministration(), "", "click");
-			requiredTab = administration.getTab(logger, "Course Management");
-			CommonMethods.TestfindElement(logger, requiredTab, "", "click");
-			CommonMethods.TestfindElement(logger, administration.getAssessmentQuestion(), "", "click");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getAddNew(), "", "click");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestion(), CommonMethods.getValue("Question"),
-					"type");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getMetaData(), CommonMethods.getValue("MetaData"),
-					"type");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestionLevel(),
-					CommonMethods.getValue("QuestionLevel"), "select");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getMarksPerQuestion(),
-					CommonMethods.getValue("MarksPerQuestion"), "select");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getIsActiveQuestion(),
-					CommonMethods.getValue("IsActiveQuestion"), "tick");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getIsMemoQuestion(),
-					CommonMethods.getValue("IsMemoQuestion"), "tick");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getOptionsCount(),
-					CommonMethods.getValue("OptionsCount"), "select");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestionType(),
-					CommonMethods.getValue("QuestionType"), "select");
-			CommonMethods.webTableOp(logger, assessmentQuestion.optionWebTable1,
-					assessmentQuestion.optionsWebTable2, CommonMethods.getValue("OptionsCount"), "type");
-			CommonMethods.webTableOp(logger, assessmentQuestion.correctOption1, assessmentQuestion.correctOption2,
-					CommonMethods.getValue("correctOption"), "tick");
-			CommonMethods.TestfindElement(logger, assessmentQuestion.getSaveQuestion(), "", "click");
-			
-			/*if(CommonMethods.webTableOp(logger, assessmentQuestion.savedQuestionText1, assessmentQuestion.savedQuestionText2,
-					CommonMethods.getValue("Question"), "getText").equalsIgnoreCase(CommonMethods.getValue("Question"))){
-				System.out.println("yes it is saved successfully");
-			}
-*/
+
+		// initialization
+		String question = CommonMethods.getValue("Question");
+		String metaData = CommonMethods.getValue("MetaData");
+		String questionLevel = CommonMethods.getValue("QuestionLevel");
+		String marksPerQuestion = CommonMethods.getValue("MarksPerQuestion");
+		String isActiveQuestion = CommonMethods.getValue("IsActiveQuestion");
+		String isMemoQuestion = CommonMethods.getValue("IsMemoQuestion");
+		String optionsCount = CommonMethods.getValue("OptionsCount");
+		String questionType = CommonMethods.getValue("QuestionType");
+		String correctOption = CommonMethods.getValue("correctOption");
+
+		if (checkAPI == false && checkUI == true) {
 			Thread.sleep(5000);
-			String textFromGrid = CommonMethods.webTableOp(logger, assessmentQuestion.savedQuestionText1, assessmentQuestion.savedQuestionText2,
-					CommonMethods.getValue("Question"), "getText");
-			
-			System.out.println(textFromGrid);
+			if (PageObjects.driver.getCurrentUrl().contains("admin")) {
+				CommonMethods.TestfindElement(logger, PageObjects.getAdministration(), "", "click");
+				requiredTab = administration.getTab(logger, "Course Management");
+				CommonMethods.TestfindElement(logger, requiredTab, "", "click");
+				CommonMethods.TestfindElement(logger, administration.getAssessmentQuestion(), "", "click");
+				CommonMethods.TestfindElement(logger, assessmentQuestion.getAddNew(), "", "click");
+				CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestion(), question, "type");
+				CommonMethods.TestfindElement(logger, assessmentQuestion.getMetaData(), metaData, "type");
+				CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestionLevel(), questionLevel, "select");
+				CommonMethods.TestfindElement(logger, assessmentQuestion.getMarksPerQuestion(), marksPerQuestion,
+						"select");
+				CommonMethods.TestfindElement(logger, assessmentQuestion.getIsActiveQuestion(), isActiveQuestion,
+						"tick");
+				CommonMethods.TestfindElement(logger, assessmentQuestion.getIsMemoQuestion(), isMemoQuestion, "tick");
+				CommonMethods.TestfindElement(logger, assessmentQuestion.getOptionsCount(), optionsCount, "select");
+				CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestionType(), questionType, "select");
+				CommonMethods.webTableOp(logger, assessmentQuestion.optionWebTable1,
+						assessmentQuestion.optionsWebTable2, optionsCount, "type");
+				CommonMethods.webTableOp(logger, assessmentQuestion.correctOption1, assessmentQuestion.correctOption2,
+						correctOption, "tick");
+				CommonMethods.TestfindElement(logger, assessmentQuestion.getSaveQuestion(), "", "click");
 
-			if(textFromGrid.equalsIgnoreCase(CommonMethods.getValue("Question"))) {
-				System.out.println("saved que successfully");
+				Thread.sleep(3000);
+				String textFromGrid = CommonMethods.webTableOp(logger, assessmentQuestion.savedQuestionText1,
+						assessmentQuestion.savedQuestionText2, question, "getText");
+
+				if (textFromGrid.equalsIgnoreCase(question)) {
+					logger.log(Status.PASS, PageObjects.methodNameToGetSheetName + " successfully");
+				} else {
+					logger.log(Status.FAIL, PageObjects.methodNameToGetSheetName + " Failed");
+				}
 			}
+		} else {
+			// Checking whether entered question is unique or not ?
+			// initialization
+			Response response = null;
+			String APIUrl = CommonMethods.getValue("API request1");
+			String httpMethod = CommonMethods.getValue("Method1");
+			Double expectedResponseCode = Double.parseDouble(CommonMethods.getValue("Expected response code1"));
+			String requestBody = CommonMethods.getValue("Parameter json1");
 
+			// api call
+			response = api.CommonMethods.testResponseCode(APIUrl, httpMethod, expectedResponseCode, requestBody);
+
+			if (response != null) {
+				// if not duplicate que
+				if (response.getBody().asString().toString().equals("false")) {
+					logger.log(Status.INFO, PageObjects.methodNameToGetSheetName + " Unique question");
+
+					response = null;
+					APIUrl = CommonMethods.getValue("API request2");
+					httpMethod = CommonMethods.getValue("Method2");
+					expectedResponseCode = Double.parseDouble(CommonMethods.getValue("Expected response code2"));
+					requestBody = CommonMethods.getValue("Parameter json2");
+					// Saving question
+					response = api.CommonMethods.testResponseCode(APIUrl, httpMethod, expectedResponseCode,
+							requestBody);
+					if (response != null) {
+						if (response.getStatusCode() == Integer
+								.parseInt(CommonMethods.getValue("Expected response code2"))) {
+						}
+					}
+				} else {
+					logger.log(Status.INFO, "Duplicate question " + requestBody);
+				}
+			}
+			logger.log(Status.PASS, "Duplicate question");
 		}
 	}
+/*
+	@Test(enabled = true, priority = 3, dependsOnMethods = { "login" }, description = "Search question")
+	public void searchQuestion() throws IOException, Exception {
+		
+		  PageObjects.methodNameToGetSheetName = new Object() {
+		  }.getClass().getEnclosingMethod().getName();
+		  System.out.println("We are in:: " + PageObjects.methodNameToGetSheetName);
+		  logger = PageObjects.extent.createTest(PageObjects.methodNameToGetSheetName);
+		  System.out.println("1"); CommonMethods.TestfindElement(logger,
+		  assessmentQuestion.getSearchQuestion(), CommonMethods.getValue("Question",
+		  "createQuestionManually"), "type"); System.out.println("2");
+		  CommonMethods.TestfindElement(logger, assessmentQuestion.getSearchIcon(), "",
+		  "click"); Thread.sleep(2000);
+		  }
 
-	/*
-	 * @Test(enabled = true, priority=3, dependsOnMethods = { "login",
-	 * "createQuestionManually" }, description = "add question by import",
-	 * retryAnalyzer = common.CommonMethods.class) public void questionAddImport()
-	 * throws InterruptedException {
-	 * 
-	 * driver.navigate().to(PageObjects.urlAdmin);
-	 * 
-	 * Thread.sleep(5000); // navigate que management
-	 * driver.findElement(By.xpath(PageObjects.courseManagementXpath)).click();
-	 * driver.findElement(By.xpath(PageObjects.assessmentQueXpath)).click();
-	 * 
-	 * // click import icon
-	 * driver.findElement(By.xpath(PageObjects.importIconXpath)).click();
-	 * 
-	 * // click choose file
-	 * driver.findElement(By.id(PageObjects.chooseFile)).click(); // select file
-	 * driver.findElement(By.id(PageObjects.chooseFile)).sendKeys(PageObjects.
-	 * questionBankImportFilePath); // click import
-	 * driver.findElement(By.xpath(PageObjects.importSelectedFile)).click();
-	 * 
-	 * if (!driver.findElement(By.xpath(
-	 * "/html/body/modal-container/div/div/div[2]/div[1]/alert/div/strong"))
-	 * .getText().toString().contains("Total number of record record rejected : 0"))
-	 * { System.out.println("failed to import"); } }
-	 * 
-	 * @Test(enabled = true, priority=4, dependsOnMethods = { "login",
-	 * "createQuestionManually" }, description = "edit question manually",
-	 * retryAnalyzer = common.CommonMethods.class) public void editQuestion() throws
-	 * InterruptedException {
-	 * 
-	 * driver.navigate().to(PageObjects.urlAdmin);
-	 * 
-	 * Thread.sleep(5000); // navigate Course management
-	 * driver.findElement(By.xpath(PageObjects.courseManagementXpath)).click(); //
-	 * navigate assessment management
-	 * driver.findElement(By.xpath(PageObjects.assessmentQueXpath)).click();
-	 * 
-	 * driver.findElement(By.xpath(
-	 * "/html/body/app-root/app-full-layout/div[1]/main/div/app-assessment/div[2]/div/div/app-assessment-grid/div/div/ngx-datatable/div/datatable-body/datatable-selection/datatable-scroller/datatable-row-wrapper[1]/datatable-body-row/div[2]/datatable-body-cell[6]/div/i[1]"
-	 * )) .click();
-	 * 
-	 * // update Question text }
-	 * 
-	 * @AfterTest public void afterEachTest() { PageObjects.counterOfTry = 0;
-	 * PageObjects.retryLimit = 0; }
-	 */
+	@Test(enabled = true, priority = 4, dependsOnMethods = { "login" }, description = "Edit question")
+	public void editQuestion() throws IOException, Exception {
+
+		PageObjects.methodNameToGetSheetName = new Object() {
+		}.getClass().getEnclosingMethod().getName();
+		logger = PageObjects.extent.createTest(PageObjects.methodNameToGetSheetName);
+
+		
+		  List<String> editList = CommonMethods.getKeys();
+		  
+		  for (String editElement : editList) { System.out.println(editElement);
+		  edit(editElement, ) }
+		 
+		 CommonMethods.TestfindElement(logger, assessmentQuestion.getQuestion(),
+		 CommonMethods.getValue("Question"),
+		 "type");
+
+		 CommonMethods.TestfindElement(logger, assessmentQuestion.getEditQuestion(),
+		 "", "click");
+		 CommonMethods.TestfindElement(logger, assessmentQuestion.getEditQuestion(),
+		 "", "click");
+
+	}
+*/
 	@AfterSuite(enabled = true)
 	public void closeBrowser() throws ParseException, InterruptedException {
 		// PageObjects.driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL,"t");
-		System.out.println("in after suit---------");
 		if (PageObjects.prop.getProperty("EnableMailShoot").equalsIgnoreCase("true")) {
 			String from = PageObjects.prop.getProperty("From");
 
@@ -292,8 +320,8 @@ public class QuestionAdd {
 
 			}
 		}
-		// Thread.sleep(10000);
-		// PageObjects.driver.get(PageObjects.htmlReportPath);
+		Thread.sleep(5000);
+		PageObjects.driver.get(PageObjects.htmlReportPath);
 	}
 
 }

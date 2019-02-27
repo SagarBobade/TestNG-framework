@@ -90,7 +90,7 @@
               <div class="suite-section-content">
                 <ul>
                   <li>
-                    <span class="method-stats">2 methods,   2 passed</span>
+                    <span class="method-stats">4 methods,   4 passed</span>
                   </li>
                   <li>
                     <span class="method-list-title passed">Passed methods</span>
@@ -106,7 +106,17 @@
                       <br/>
                       <span>
                         <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="plain.QuestionAdd" class="method navigator-link" hash-for-method="editQuestion">editQuestion</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
                         <a href="#" panel-name="suite-Suite" title="plain.QuestionAdd" class="method navigator-link" hash-for-method="login">login</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Suite" title="plain.QuestionAdd" class="method navigator-link" hash-for-method="searchQuestion">searchQuestion</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                     </div> <!-- method-list-content passed suite-Suite -->
@@ -138,11 +148,29 @@
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
+                  <a name="editQuestion">
+                  </a> <!-- editQuestion -->
+                  <span class="method-name">editQuestion</span>
+                  <em>
+(Edit question)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
                   <a name="login">
                   </a> <!-- login -->
                   <span class="method-name">login</span>
                   <em>
 (login to the application)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="searchQuestion">
+                  </a> <!-- searchQuestion -->
+                  <span class="method-name">searchQuestion</span>
+                  <em>
+(Search question)                  </em>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -199,20 +227,28 @@ data.addColumn('number', 'Number');
 data.addColumn('string', 'Method');
 data.addColumn('string', 'Class');
 data.addColumn('number', 'Time (ms)');
-data.addRows(2);
+data.addRows(4);
 data.setCell(0, 0, 0)
 data.setCell(0, 1, 'login')
 data.setCell(0, 2, 'plain.QuestionAdd')
-data.setCell(0, 3, 23143);
+data.setCell(0, 3, 4486);
 data.setCell(1, 0, 1)
 data.setCell(1, 1, 'createQuestionManually')
 data.setCell(1, 2, 'plain.QuestionAdd')
-data.setCell(1, 3, 16975);
+data.setCell(1, 3, 883);
+data.setCell(2, 0, 2)
+data.setCell(2, 1, 'editQuestion')
+data.setCell(2, 2, 'plain.QuestionAdd')
+data.setCell(2, 3, 4);
+data.setCell(3, 0, 3)
+data.setCell(3, 1, 'searchQuestion')
+data.setCell(3, 2, 'plain.QuestionAdd')
+data.setCell(3, 3, 3);
 window.suiteTableData['Suite']= { tableData: data, tableDiv: 'times-div-Suite'}
 return data;
 }
               </script>
-              <span class="suite-total-time">Total running time: 40 seconds</span>
+              <span class="suite-total-time">Total running time: 5 seconds</span>
               <div id="times-div-Suite">
               </div> <!-- times-div-Suite -->
             </div> <!-- times-div -->
@@ -245,27 +281,35 @@ return data;
               </div> <!-- configuration-suite before -->
               <div class="configuration-test before">
                 <span class="method-name">beforeTest</span>
-                <span class="method-start">9565 ms</span>
+                <span class="method-start">151 ms</span>
               </div> <!-- configuration-test before -->
               <div class="configuration-class before">
                 <span class="method-name">beforeClass</span>
-                <span class="method-start">9845 ms</span>
+                <span class="method-start">394 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
                 <span class="method-name">login</span>
-                <span class="method-start">9976 ms</span>
+                <span class="method-start">470 ms</span>
               </div> <!-- test-method -->
               <div class="test-method">
                 <span class="method-name">createQuestionManually</span>
-                <span class="method-start">33123 ms</span>
+                <span class="method-start">4966 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">searchQuestion</span>
+                <span class="method-start">5854 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">editQuestion</span>
+                <span class="method-start">5861 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-test after">
                 <span class="method-name">afterTest</span>
-                <span class="method-start">50098 ms</span>
+                <span class="method-start">5873 ms</span>
               </div> <!-- configuration-test after -->
               <div class="configuration-suite after">
                 <span class="method-name">closeBrowser</span>
-                <span class="method-start">51854 ms</span>
+                <span class="method-start">6534 ms</span>
               </div> <!-- configuration-suite after -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->

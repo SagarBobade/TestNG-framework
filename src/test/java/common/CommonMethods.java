@@ -2,15 +2,13 @@ package common;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -18,27 +16,19 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.Markup;
-import com.google.common.base.Function;
-
-import net.bytebuddy.asm.Advice.Exit;
-
-import org.openqa.selenium.WebDriver;
 
 import pageObjects.PageObjects;
 
@@ -51,7 +41,6 @@ public class CommonMethods implements IRetryAnalyzer {
 	public boolean retry(ITestResult result) {
 
 		if (PageObjects.counterOfTry <= PageObjects.retryLimit) {
-			System.out.println("Trying : " + PageObjects.counterOfTry + "time");
 			PageObjects.counterOfTry++;
 			return true;
 		}
@@ -75,27 +64,75 @@ public class CommonMethods implements IRetryAnalyzer {
 			if (sheet.getRow(i).getCell(0).toString().equalsIgnoreCase(key)) {
 				valuefromExcel = sheet.getRow(i).getCell(1).toString();
 				workbook.close();
-				inputStream.close();
-				System.out.println("We found :" + valuefromExcel);
+				inputStream.close();	
 				return valuefromExcel;
 			} else {
 				i++;
 			}
 		}
+
 		workbook.close();
 		inputStream.close();
 		return null;
 	}
 
+	public static String getValue(String key, String sheetName) throws IOException {
+
+		int i = 0;
+		XSSFWorkbook workbook = null;
+		XSSFSheet sheet = null;
+		String valuefromExcel = null;
+
+		File file = new File("C:\\Users\\sagarb\\Desktop\\Test.xlsx");
+		FileInputStream inputStream = new FileInputStream(file);
+
+		workbook = new XSSFWorkbook(inputStream);
+		sheet = (XSSFSheet) workbook.getSheet(sheetName);
+
+		while (i < sheet.getLastRowNum()) {
+			if (sheet.getRow(i).getCell(0).toString().equalsIgnoreCase(key)) {
+				valuefromExcel = sheet.getRow(i).getCell(1).toString();
+				workbook.close();
+				inputStream.close();
+				return valuefromExcel;
+			} else {
+				i++;
+			}
+		}
+
+		workbook.close();
+		inputStream.close();
+		return null;
+	}
+
+	public static List<String> getKeys() throws IOException {
+
+		int i = 0;
+		XSSFWorkbook workbook = null;
+		XSSFSheet sheet = null;
+		List<String> valuesfromExcel = new ArrayList();
+
+		File file = new File("C:\\Users\\sagarb\\Desktop\\Test.xlsx");
+		FileInputStream inputStream = new FileInputStream(file);
+
+		workbook = new XSSFWorkbook(inputStream);
+		sheet = (XSSFSheet) workbook.getSheet(PageObjects.methodNameToGetSheetName);
+
+		while (i <= sheet.getLastRowNum()) {
+			if (sheet.getRow(i).getCell(0).toString().contains("update")) {
+				valuesfromExcel.add(sheet.getRow(i).getCell(0).toString());
+			}
+			i++;
+		}
+		workbook.close();
+		inputStream.close();
+		return valuesfromExcel;
+	}
+
 	public static List<WebElement> wait(List<WebElement> list) throws InterruptedException {
 
-		System.out.println("in wait after hiii");
 		WebDriverWait wait = new WebDriverWait(PageObjects.driver, 20);
-		System.out.println("in wait");
-
 		wait.until(ExpectedConditions.visibilityOfAllElements(list));
-
-		System.out.println("in wait before return");
 		return list;
 	}
 
@@ -261,7 +298,6 @@ public class CommonMethods implements IRetryAnalyzer {
 	public static String webTableOp(ExtentTest logger, String xpath1, String xpath2, String value, String OP)
 			throws IOException {
 
-		
 		switch (OP) {
 
 		case "type":
@@ -276,17 +312,17 @@ public class CommonMethods implements IRetryAnalyzer {
 			}
 			break;
 		case "tick":
-			// This can be used to Tick the particular TOGGLE BUTTON in grid of toggle buttons
+			// This can be used to Tick the particular TOGGLE BUTTON in grid of toggle
+			// buttons
 			String webElementToTick = value.substring(value.length() - 1);
 			PageObjects.driver.findElement(By.xpath(xpath1 + webElementToTick + xpath2)).click();
 			break;
 		case "getText":
-		//	String webElementToTick2 = null;
+			// String webElementToTick2 = null;
 			// This can be used to Tick the particular TEXT in grid
-				//String webElementToTick = value.substring(value.length() - 1);
-			System.out.println("in gettext case");
-			return PageObjects.driver.findElement(By.xpath(xpath1 +value+ xpath2)).getText().toString();
-			}
+			// String webElementToTick = value.substring(value.length() - 1);
+			return PageObjects.driver.findElement(By.xpath(xpath1 + value + xpath2)).getText().toString();
+		}
 		return "";
 
 	}
